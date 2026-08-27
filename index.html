@@ -14,6 +14,14 @@ content="width=device-width, initial-scale=1.0"
 
 <title>Retro Web Emulator</title>
 
+<!-- Retro favicon -->
+
+<link
+rel="icon"
+type="image/svg+xml"
+href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23191919'/%3E%3Crect x='10' y='18' width='44' height='28' rx='7' fill='%23555'/%3E%3Crect x='17' y='25' width='14' height='4' fill='white'/%3E%3Crect x='22' y='20' width='4' height='14' fill='white'/%3E%3Ccircle cx='44' cy='27' r='3' fill='%23ff5555'/%3E%3Ccircle cx='50' cy='33' r='3' fill='%2355aaff'/%3E%3C/svg%3E"
+>
+
 <style>
 
 * {
@@ -120,6 +128,25 @@ h1 {
 }
 
 
+#pcFile {
+
+    width: 100%;
+
+    padding: 12px;
+
+    background: #222;
+
+    color: white;
+
+    border: 1px solid #555;
+
+    border-radius: 6px;
+
+    font-size: 15px;
+
+}
+
+
 .controls {
 
     display: flex;
@@ -173,6 +200,22 @@ h1 {
     background: #000;
 
     position: relative;
+
+}
+
+
+.hidden {
+    display: none;
+}
+
+
+.local-info {
+
+    margin-top: 8px;
+
+    color: #888;
+
+    font-size: 13px;
 
 }
 
@@ -235,6 +278,26 @@ h1 {
     Game Boy Advance
 </button>
 
+<button data-system="atari2600">
+    Atari 2600
+</button>
+
+<button data-system="n64">
+    Nintendo 64
+</button>
+
+<button data-system="psx">
+    PlayStation 1
+</button>
+
+<button data-system="nds">
+    Nintendo DS
+</button>
+
+<button data-system="psp">
+    PSP
+</button>
+
 </div>
 
 <div class="panel">
@@ -246,6 +309,20 @@ h1 {
 </option>
 
 </select>
+
+<input
+type="file"
+id="pcFile"
+class="hidden"
+
+>
+
+<div
+    id="localInfo"
+    class="local-info hidden"
+>
+    Select a ROM / ISO file from your PC.
+</div>
 
 <div class="controls">
 
@@ -312,6 +389,8 @@ const SYSTEMS = {
 
         core: "nestopia",
 
+        source: "project",
+
         extensions: [
             "nes",
             "fds",
@@ -327,6 +406,8 @@ const SYSTEMS = {
         name: "SNES",
 
         core: "snes9x",
+
+        source: "project",
 
         extensions: [
             "sfc",
@@ -346,6 +427,8 @@ const SYSTEMS = {
 
         core: "genesis_plus_gx",
 
+        source: "project",
+
         extensions: [
             "md",
             "gen",
@@ -361,6 +444,8 @@ const SYSTEMS = {
 
         core: "genesis_plus_gx",
 
+        source: "project",
+
         extensions: [
             "sms"
         ]
@@ -374,6 +459,8 @@ const SYSTEMS = {
 
         core: "genesis_plus_gx",
 
+        source: "project",
+
         extensions: [
             "gg"
         ]
@@ -386,6 +473,8 @@ const SYSTEMS = {
         name: "Game Boy",
 
         core: "gambatte",
+
+        source: "project",
 
         extensions: [
             "gb",
@@ -401,6 +490,8 @@ const SYSTEMS = {
 
         core: "gambatte",
 
+        source: "project",
+
         extensions: [
             "gbc"
         ]
@@ -414,9 +505,102 @@ const SYSTEMS = {
 
         core: "mgba",
 
+        source: "project",
+
         extensions: [
             "gba"
         ]
+
+    },
+
+
+    atari2600: {
+
+        name: "Atari 2600",
+
+        core: "atari2600",
+
+        source: "project",
+
+        extensions: [
+            "a26",
+            "bin"
+        ]
+
+    },
+
+
+    n64: {
+
+        name: "Nintendo 64",
+
+        core: "n64",
+
+        source: "pc",
+
+        extensions: [
+            "z64",
+            "n64",
+            "v64"
+        ]
+
+    },
+
+
+    psx: {
+
+        name: "PlayStation 1",
+
+        core: "psx",
+
+        source: "pc",
+
+        extensions: [
+            "cue",
+            "bin",
+            "chd",
+            "pbp",
+            "img",
+            "mdf",
+            "toc",
+            "cbn",
+            "m3u",
+            "ccd"
+        ]
+
+    },
+
+
+    nds: {
+
+        name: "Nintendo DS",
+
+        core: "nds",
+
+        source: "pc",
+
+        extensions: [
+            "nds"
+        ]
+
+    },
+
+
+    psp: {
+
+        name: "PlayStation Portable",
+
+        core: "psp",
+
+        source: "pc",
+
+        extensions: [
+            "iso",
+            "cso",
+            "pbp"
+        ],
+
+        threads: true
 
     }
 
@@ -439,6 +623,10 @@ let currentROM =
     null;
 
 
+let currentLocalFile =
+    null;
+
+
 
 /*
 ============================================================
@@ -449,6 +637,14 @@ ELEMENTS
 
 const romSelect =
     document.getElementById("romSelect");
+
+
+const pcFile =
+    document.getElementById("pcFile");
+
+
+const localInfo =
+    document.getElementById("localInfo");
 
 
 const status =
@@ -511,6 +707,75 @@ LOAD ROMS FROM GITHUB
 
 
 async function loadROMs() {
+
+
+    const system =
+        getSystem();
+
+
+    /*
+    --------------------------------------------------------
+    Systems using local PC files
+    --------------------------------------------------------
+    */
+
+
+    if (system.source === "pc") {
+
+
+        romSelect.classList.add(
+            "hidden"
+        );
+
+
+        pcFile.classList.remove(
+            "hidden"
+        );
+
+
+        localInfo.classList.remove(
+            "hidden"
+        );
+
+
+        pcFile.value =
+            "";
+
+
+        currentLocalFile =
+            null;
+
+
+        status.textContent =
+            system.name +
+            " — choose a game from your PC.";
+
+
+        return;
+
+    }
+
+
+    /*
+    --------------------------------------------------------
+    Systems using project ROMs
+    --------------------------------------------------------
+    */
+
+
+    romSelect.classList.remove(
+        "hidden"
+    );
+
+
+    pcFile.classList.add(
+        "hidden"
+    );
+
+
+    localInfo.classList.add(
+        "hidden"
+    );
 
 
     status.textContent =
@@ -618,7 +883,7 @@ async function loadROMs() {
         status.textContent =
             roms.length +
             " game(s) found for " +
-            getSystem().name;
+            system.name;
 
 
     }
@@ -706,31 +971,102 @@ START GAME
 function startGame() {
 
 
-    const filename =
-        romSelect.value;
+    const system =
+        getSystem();
 
 
-    if (!filename) {
+    /*
+    --------------------------------------------------------
+    Project ROM
+    --------------------------------------------------------
+    */
 
 
-        status.textContent =
-            "Select a game first.";
+    if (system.source === "project") {
 
 
-        return;
+        const filename =
+            romSelect.value;
+
+
+        if (!filename) {
+
+
+            status.textContent =
+                "Select a game first.";
+
+
+            return;
+
+        }
+
+
+        currentROM =
+            filename;
+
+
+        currentLocalFile =
+            null;
+
+
+        stopPreviousEmulator();
+
+
+        window.EJS_gameUrl =
+            ROMS_PATH +
+            filename
+                .split("/")
+                .map(
+                    part =>
+                        encodeURIComponent(
+                            part
+                        )
+                )
+                .join("/");
 
     }
 
 
-    currentROM =
-        filename;
+    /*
+    --------------------------------------------------------
+    PC ROM / ISO
+    --------------------------------------------------------
+    */
 
 
-    stopPreviousEmulator();
+    else {
 
 
-    const system =
-        getSystem();
+        if (!currentLocalFile) {
+
+
+            status.textContent =
+                "Choose a ROM / ISO from your PC first.";
+
+
+            return;
+
+        }
+
+
+        currentROM =
+            currentLocalFile.name;
+
+
+        stopPreviousEmulator();
+
+
+        /*
+        EmulatorJS officially accepts
+        the selected File object as EJS_gameUrl.
+        */
+
+
+        window.EJS_gameUrl =
+            currentLocalFile;
+
+    }
+
 
 
     /*
@@ -748,17 +1084,6 @@ function startGame() {
         system.core;
 
 
-    window.EJS_gameUrl =
-        ROMS_PATH +
-        filename
-            .split("/")
-            .map(
-                part =>
-                    encodeURIComponent(part)
-            )
-            .join("/");
-
-
     window.EJS_pathtodata =
         DATA_PATH;
 
@@ -768,12 +1093,31 @@ function startGame() {
 
 
     window.EJS_gameName =
-        filename;
+        currentROM;
+
+
+    /*
+    PSP requires threads.
+    */
+
+
+    if (system.threads) {
+
+        window.EJS_threads =
+            true;
+
+    }
+    else {
+
+        window.EJS_threads =
+            false;
+
+    }
 
 
     /*
     --------------------------------------------------------
-    Load official Stable loader
+    STATUS
     --------------------------------------------------------
     */
 
@@ -782,6 +1126,13 @@ function startGame() {
         "Loading " +
         system.name +
         " core...";
+
+
+    /*
+    --------------------------------------------------------
+    LOAD OFFICIAL STABLE LOADER
+    --------------------------------------------------------
+    */
 
 
     const loader =
@@ -815,6 +1166,7 @@ function startGame() {
             status.textContent =
                 "ERROR: EmulatorJS loader could not be loaded.";
 
+
             console.error(
                 "Failed to load:",
                 loader.src
@@ -828,6 +1180,91 @@ function startGame() {
     );
 
 }
+
+
+
+/*
+============================================================
+PC FILE SELECTION
+============================================================
+*/
+
+
+pcFile.addEventListener(
+    "change",
+    function() {
+
+
+        if (!pcFile.files.length) {
+
+
+            currentLocalFile =
+                null;
+
+
+            status.textContent =
+                "No file selected.";
+
+
+            return;
+
+        }
+
+
+        const file =
+            pcFile.files[0];
+
+
+        const system =
+            getSystem();
+
+
+        const filename =
+            file.name.toLowerCase();
+
+
+        const extension =
+            filename.includes(".")
+                ? filename.split(".").pop()
+                : "";
+
+
+        if (
+            !system.extensions.includes(
+                extension
+            )
+        ) {
+
+
+            currentLocalFile =
+                null;
+
+
+            status.textContent =
+                "Unsupported file for " +
+                system.name +
+                ".";
+
+
+            pcFile.value =
+                "";
+
+
+            return;
+
+        }
+
+
+        currentLocalFile =
+            file;
+
+
+        status.textContent =
+            "Selected: " +
+            file.name;
+
+    }
+);
 
 
 
@@ -872,6 +1309,10 @@ document
 
 
                 currentROM =
+                    null;
+
+
+                currentLocalFile =
                     null;
 
 
