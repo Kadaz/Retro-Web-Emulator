@@ -3,35 +3,190 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+
+>
 
 <title>Retro Web Emulator</title>
 
 <style>
+
+* {
+    box-sizing: border-box;
+}
+
 
 html,
 body {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     background: #111;
     color: white;
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
+
+
+body {
+    overflow-x: hidden;
+}
+
+
+#app {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+
+h1 {
+    text-align: center;
+    margin-top: 0;
+}
+
+
+.systems {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+
+.systems button {
+
+    padding: 10px 15px;
+
+    border: 1px solid #666;
+
+    border-radius: 6px;
+
+    background: #292929;
+
+    color: white;
+
+    cursor: pointer;
+
+}
+
+
+.systems button:hover {
+    background: #3a3a3a;
+}
+
+
+.systems button.active {
+    background: #555;
+}
+
+
+.panel {
+
+    background: #191919;
+
+    border: 1px solid #444;
+
+    border-radius: 8px;
+
+    padding: 15px;
+
+}
+
+
+#romSelect {
+
+    width: 100%;
+
+    padding: 12px;
+
+    background: #222;
+
+    color: white;
+
+    border: 1px solid #555;
+
+    border-radius: 6px;
+
+    font-size: 15px;
+
+}
+
+
+.controls {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin: 12px 0;
+
+}
+
+
+.controls button {
+
+    padding: 10px 18px;
+
+    background: #292929;
+
+    color: white;
+
+    border: 1px solid #666;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+}
+
+
+.controls button:hover {
+    background: #3a3a3a;
+}
+
 
 #status {
-    padding: 15px;
-    text-align: center;
-    background: #181818;
+
+    padding: 10px 0;
+
+    color: #bbb;
+
 }
 
+
 #game {
+
     width: 100%;
-    height: calc(100vh - 50px);
-    min-height: 500px;
+
+    min-height: 600px;
+
     background: #000;
+
+    position: relative;
+
+}
+
+
+@media (max-width: 700px) {
+
+    #app {
+        padding: 8px;
+    }
+
+    #game {
+        min-height: 450px;
+    }
+
 }
 
 </style>
@@ -40,45 +195,777 @@ body {
 
 <body>
 
+<div id="app">
+
+<h1>
+    Retro Web Emulator
+</h1>
+
+<div class="systems">
+
+<button data-system="nes">
+    NES
+</button>
+
+<button data-system="snes">
+    SNES
+</button>
+
+<button data-system="genesis">
+    Mega Drive
+</button>
+
+<button data-system="sms">
+    Master System
+</button>
+
+<button data-system="gg">
+    Game Gear
+</button>
+
+<button data-system="gb">
+    Game Boy
+</button>
+
+<button data-system="gbc">
+    Game Boy Color
+</button>
+
+<button data-system="gba">
+    Game Boy Advance
+</button>
+
+</div>
+
+<div class="panel">
+
+<select id="romSelect">
+
+<option value="">
+    Select a game...
+</option>
+
+</select>
+
+<div class="controls">
+
+<button id="play">
+    Play
+</button>
+
+<button id="refresh">
+    Refresh
+</button>
+
+<button id="reset">
+    Reset
+</button>
+
+</div>
+
 <div id="status">
-    Loading SNES emulator...
+    Loading ROM list...
 </div>
 
 <div id="game"></div>
 
+</div>
+
+</div>
+
 <script>
+
 
 /*
- * EmulatorJS configuration
- *
- * super-metroid.sfc is a SNES ROM.
- */
+============================================================
+CONFIGURATION
+============================================================
+*/
 
-var EJS_player = "#game";
 
-var EJS_core = "snes9x";
-
-var EJS_gameUrl = "./roms/super-metroid.sfc";
-
-var EJS_pathtodata =
+const DATA_PATH =
     "https://cdn.emulatorjs.org/stable/data/";
 
-</script>
 
-<script
-    src="https://cdn.emulatorjs.org/stable/data/loader.js">
-</script>
+const ROMS_PATH =
+    "./roms/";
 
-<script>
 
-window.addEventListener("load", function () {
+const GITHUB_ROM_API =
+    "https://api.github.com/repos/Kadaz/Retro-Web-Emulator/contents/roms?ref=main";
 
-    document.getElementById("status").textContent =
-        "SNES emulator loaded.";
 
-});
+
+/*
+============================================================
+SYSTEMS
+============================================================
+*/
+
+
+const SYSTEMS = {
+
+
+    nes: {
+
+        name: "NES",
+
+        core: "nestopia",
+
+        extensions: [
+            "nes",
+            "fds",
+            "unif",
+            "unf"
+        ]
+
+    },
+
+
+    snes: {
+
+        name: "SNES",
+
+        core: "snes9x",
+
+        extensions: [
+            "sfc",
+            "smc",
+            "swc",
+            "fig",
+            "bs",
+            "st"
+        ]
+
+    },
+
+
+    genesis: {
+
+        name: "Mega Drive / Genesis",
+
+        core: "genesis_plus_gx",
+
+        extensions: [
+            "md",
+            "gen",
+            "smd"
+        ]
+
+    },
+
+
+    sms: {
+
+        name: "Master System",
+
+        core: "genesis_plus_gx",
+
+        extensions: [
+            "sms"
+        ]
+
+    },
+
+
+    gg: {
+
+        name: "Game Gear",
+
+        core: "genesis_plus_gx",
+
+        extensions: [
+            "gg"
+        ]
+
+    },
+
+
+    gb: {
+
+        name: "Game Boy",
+
+        core: "gambatte",
+
+        extensions: [
+            "gb",
+            "dmg"
+        ]
+
+    },
+
+
+    gbc: {
+
+        name: "Game Boy Color",
+
+        core: "gambatte",
+
+        extensions: [
+            "gbc"
+        ]
+
+    },
+
+
+    gba: {
+
+        name: "Game Boy Advance",
+
+        core: "mgba",
+
+        extensions: [
+            "gba"
+        ]
+
+    }
+
+};
+
+
+
+/*
+============================================================
+CURRENT SYSTEM
+============================================================
+*/
+
+
+let currentSystem =
+    "snes";
+
+
+let currentROM =
+    null;
+
+
+
+/*
+============================================================
+ELEMENTS
+============================================================
+*/
+
+
+const romSelect =
+    document.getElementById("romSelect");
+
+
+const status =
+    document.getElementById("status");
+
+
+const game =
+    document.getElementById("game");
+
+
+
+/*
+============================================================
+GET SYSTEM
+============================================================
+*/
+
+
+function getSystem() {
+
+    return SYSTEMS[currentSystem];
+
+}
+
+
+
+/*
+============================================================
+CHECK EXTENSION
+============================================================
+*/
+
+
+function isSupported(filename) {
+
+
+    const lower =
+        filename.toLowerCase();
+
+
+    const extension =
+        lower.includes(".")
+            ? lower.split(".").pop()
+            : "";
+
+
+    return getSystem()
+        .extensions
+        .includes(extension);
+
+}
+
+
+
+/*
+============================================================
+LOAD ROMS FROM GITHUB
+============================================================
+*/
+
+
+async function loadROMs() {
+
+
+    status.textContent =
+        "Loading ROMs...";
+
+
+    romSelect.innerHTML =
+        '<option value="">Loading...</option>';
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                GITHUB_ROM_API +
+                "&t=" +
+                Date.now()
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "GitHub API error: " +
+                response.status
+            );
+
+        }
+
+
+        const files =
+            await response.json();
+
+
+        if (!Array.isArray(files)) {
+
+            throw new Error(
+                "Invalid GitHub response"
+            );
+
+        }
+
+
+        const roms =
+            files
+                .filter(file =>
+                    file.type === "file" &&
+                    isSupported(file.name)
+                )
+                .sort((a, b) =>
+                    a.name.localeCompare(
+                        b.name
+                    )
+                );
+
+
+        romSelect.innerHTML =
+            "";
+
+
+        const empty =
+            document.createElement(
+                "option"
+            );
+
+
+        empty.value =
+            "";
+
+
+        empty.textContent =
+            "Select a game...";
+
+
+        romSelect.appendChild(
+            empty
+        );
+
+
+        for (const rom of roms) {
+
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                rom.name;
+
+
+            option.textContent =
+                rom.name;
+
+
+            romSelect.appendChild(
+                option
+            );
+
+        }
+
+
+        status.textContent =
+            roms.length +
+            " game(s) found for " +
+            getSystem().name;
+
+
+    }
+    catch (error) {
+
+
+        console.error(
+            "ROM loading failed:",
+            error
+        );
+
+
+        romSelect.innerHTML =
+            '<option value="">Unable to load ROMs</option>';
+
+
+        status.textContent =
+            "Unable to load ROM list.";
+
+    }
+
+}
+
+
+
+/*
+============================================================
+STOP PREVIOUS EMULATOR
+============================================================
+*/
+
+
+function stopPreviousEmulator() {
+
+
+    try {
+
+        if (
+            typeof window.EJS_terminate ===
+            "function"
+        ) {
+
+            window.EJS_terminate();
+
+        }
+
+    }
+    catch (error) {
+
+        console.warn(
+            "Could not terminate previous emulator:",
+            error
+        );
+
+    }
+
+
+    const oldLoader =
+        document.getElementById(
+            "emulatorjs-loader"
+        );
+
+
+    if (oldLoader) {
+
+        oldLoader.remove();
+
+    }
+
+
+    game.innerHTML =
+        "";
+
+}
+
+
+
+/*
+============================================================
+START GAME
+============================================================
+*/
+
+
+function startGame() {
+
+
+    const filename =
+        romSelect.value;
+
+
+    if (!filename) {
+
+
+        status.textContent =
+            "Select a game first.";
+
+
+        return;
+
+    }
+
+
+    currentROM =
+        filename;
+
+
+    stopPreviousEmulator();
+
+
+    const system =
+        getSystem();
+
+
+    /*
+    --------------------------------------------------------
+    EmulatorJS configuration
+    --------------------------------------------------------
+    */
+
+
+    window.EJS_player =
+        "#game";
+
+
+    window.EJS_core =
+        system.core;
+
+
+    window.EJS_gameUrl =
+        ROMS_PATH +
+        filename
+            .split("/")
+            .map(
+                part =>
+                    encodeURIComponent(part)
+            )
+            .join("/");
+
+
+    window.EJS_pathtodata =
+        DATA_PATH;
+
+
+    window.EJS_startOnLoaded =
+        true;
+
+
+    window.EJS_gameName =
+        filename;
+
+
+    /*
+    --------------------------------------------------------
+    Load official Stable loader
+    --------------------------------------------------------
+    */
+
+
+    status.textContent =
+        "Loading " +
+        system.name +
+        " core...";
+
+
+    const loader =
+        document.createElement(
+            "script"
+        );
+
+
+    loader.id =
+        "emulatorjs-loader";
+
+
+    loader.src =
+        DATA_PATH +
+        "loader.js";
+
+
+    loader.onload =
+        function() {
+
+            status.textContent =
+                system.name +
+                " emulator loaded.";
+
+        };
+
+
+    loader.onerror =
+        function() {
+
+            status.textContent =
+                "ERROR: EmulatorJS loader could not be loaded.";
+
+            console.error(
+                "Failed to load:",
+                loader.src
+            );
+
+        };
+
+
+    document.body.appendChild(
+        loader
+    );
+
+}
+
+
+
+/*
+============================================================
+SYSTEM BUTTONS
+============================================================
+*/
+
+
+document
+    .querySelectorAll(
+        "[data-system]"
+    )
+    .forEach(button => {
+
+
+        button.addEventListener(
+            "click",
+            function() {
+
+
+                document
+                    .querySelectorAll(
+                        "[data-system]"
+                    )
+                    .forEach(
+                        other =>
+                            other.classList.remove(
+                                "active"
+                            )
+                    );
+
+
+                button.classList.add(
+                    "active"
+                );
+
+
+                currentSystem =
+                    button.dataset.system;
+
+
+                currentROM =
+                    null;
+
+
+                loadROMs();
+
+            }
+
+        );
+
+    });
+
+
+
+/*
+============================================================
+PLAY
+============================================================
+*/
+
+
+document
+    .getElementById("play")
+    .addEventListener(
+        "click",
+        startGame
+    );
+
+
+
+/*
+============================================================
+REFRESH
+============================================================
+*/
+
+
+document
+    .getElementById("refresh")
+    .addEventListener(
+        "click",
+        loadROMs
+    );
+
+
+
+/*
+============================================================
+RESET
+============================================================
+*/
+
+
+document
+    .getElementById("reset")
+    .addEventListener(
+        "click",
+        function() {
+
+            location.reload();
+
+        }
+    );
+
+
+
+/*
+============================================================
+DEFAULT SYSTEM
+============================================================
+*/
+
+
+document
+    .querySelector(
+        '[data-system="snes"]'
+    )
+    .classList.add(
+        "active"
+    );
+
+
+
+/*
+============================================================
+INITIAL LOAD
+============================================================
+*/
+
+
+loadROMs();
+
 
 </script>
 
 </body>
+
 </html>
