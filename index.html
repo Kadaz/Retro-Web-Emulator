@@ -12,11 +12,6 @@
 
     <title>Retro Web Emulator</title>
 
-    <link
-        rel="stylesheet"
-        href="data/emulator.min.css"
-    >
-
     <style>
 
         * {
@@ -48,10 +43,7 @@
             text-align: center;
         }
 
-
-        /* ==================================================
-           SYSTEM BUTTONS
-           ================================================== */
+        /* SYSTEM BUTTONS */
 
         .tabs {
             display: flex;
@@ -79,10 +71,7 @@
             outline: 2px solid #aaa;
         }
 
-
-        /* ==================================================
-           PANEL
-           ================================================== */
+        /* PANEL */
 
         .panel {
             background: #191919;
@@ -91,39 +80,42 @@
             border-radius: 8px;
         }
 
+        /* ROM ROW */
 
-        /* ==================================================
-           ROM LIST
-           ================================================== */
-
-        #romList {
+        .row {
             display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 10px;
-            max-height: 260px;
-            overflow-y: auto;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 10px 0;
         }
 
-        .romButton {
-            width: 100%;
-            text-align: left;
-            padding: 10px 12px;
+        input,
+        button {
+            padding: 10px;
             border-radius: 6px;
+            font-size: 14px;
+        }
+
+        input {
+            background: #222;
+            color: white;
             border: 1px solid #555;
-            background: #252525;
-            color: #eee;
+            flex: 1;
+            min-width: 260px;
+        }
+
+        button {
+            background: #292929;
+            color: white;
+            border: 1px solid #666;
             cursor: pointer;
         }
 
-        .romButton:hover {
-            background: #3a3a3a;
+        button:hover {
+            background: #383838;
         }
 
-
-        /* ==================================================
-           STATUS
-           ================================================== */
+        /* STATUS */
 
         #status {
             color: #bbb;
@@ -131,10 +123,7 @@
             padding: 8px 0;
         }
 
-
-        /* ==================================================
-           EMULATOR
-           ================================================== */
+        /* EMULATOR */
 
         .screen {
             background: #000;
@@ -151,10 +140,7 @@
             position: relative;
         }
 
-
-        /* ==================================================
-           INFO
-           ================================================== */
+        /* INFORMATION */
 
         .info {
             color: #999;
@@ -162,10 +148,7 @@
             line-height: 1.5;
         }
 
-
-        /* ==================================================
-           MOBILE
-           ================================================== */
+        /* SMALL SCREENS */
 
         @media (max-width: 700px) {
 
@@ -197,19 +180,13 @@
 
 </head>
 
-
 <body>
 
 <div class="app">
 
-    <h1>
-        Retro Web Emulator
-    </h1>
+    <h1>Retro Web Emulator</h1>
 
-
-    <!-- ==================================================
-         SYSTEM SELECTION
-         ================================================== -->
+    <!-- SYSTEM SELECTION -->
 
     <div class="tabs">
 
@@ -247,28 +224,32 @@
 
     </div>
 
-
-    <!-- ==================================================
-         MAIN PANEL
-         ================================================== -->
+    <!-- MAIN PANEL -->
 
     <div class="panel">
 
-        <div id="status">
-            Scanning ROMs...
+        <div class="row">
+
+            <input
+                id="romUrl"
+                type="text"
+                placeholder="ROM path"
+                autocomplete="off"
+            >
+
+            <button id="load">
+                Load ROM
+            </button>
+
+            <button id="reset">
+                Reset
+            </button>
+
         </div>
 
-
-        <!-- ==================================================
-             ROM LIST
-             ================================================== -->
-
-        <div id="romList"></div>
-
-
-        <!-- ==================================================
-             EMULATOR
-             ================================================== -->
+        <div id="status">
+            Choose a system.
+        </div>
 
         <div class="screen">
 
@@ -276,19 +257,16 @@
 
         </div>
 
-
         <p class="info">
 
-            Select a system above, then select a ROM.
-            Keyboard, gamepad and save support are handled
-            by EmulatorJS.
+            Keyboard and compatible gamepads are handled by
+            EmulatorJS. Save data is handled by the emulator/core.
 
         </p>
 
     </div>
 
 </div>
-
 
 <script>
 
@@ -297,7 +275,6 @@
 RETRO WEB EMULATOR
 ============================================================
 */
-
 
 let selectedSystem = "snes";
 
@@ -313,8 +290,8 @@ ELEMENTS
 const status =
     document.getElementById("status");
 
-const romList =
-    document.getElementById("romList");
+const romUrl =
+    document.getElementById("romUrl");
 
 const gameContainer =
     document.getElementById("game");
@@ -322,7 +299,7 @@ const gameContainer =
 
 /*
 ============================================================
-SYSTEM CONFIGURATION
+SYSTEM INFORMATION
 ============================================================
 */
 
@@ -332,7 +309,7 @@ const systems = {
 
         name: "Super Nintendo / SNES",
 
-        core: "snes",
+        core: "snes9x",
 
         extensions: [
             ".sfc",
@@ -347,12 +324,11 @@ const systems = {
 
     },
 
-
     nes: {
 
         name: "Nintendo Entertainment System / NES",
 
-        core: "nes",
+        core: "nestopia",
 
         extensions: [
             ".nes",
@@ -363,12 +339,11 @@ const systems = {
 
     },
 
-
     segaMS: {
 
         name: "Sega Master System",
 
-        core: "segaMS",
+        core: "genesis_plus_gx",
 
         extensions: [
             ".sms"
@@ -376,12 +351,11 @@ const systems = {
 
     },
 
-
     segaMD: {
 
         name: "Sega Mega Drive / Genesis",
 
-        core: "segaMD",
+        core: "genesis_plus_gx",
 
         extensions: [
             ".md",
@@ -392,12 +366,11 @@ const systems = {
 
     },
 
-
     segaGG: {
 
         name: "Sega Game Gear",
 
-        core: "segaGG",
+        core: "genesis_plus_gx",
 
         extensions: [
             ".gg"
@@ -405,12 +378,11 @@ const systems = {
 
     },
 
-
     gb: {
 
         name: "Nintendo Game Boy",
 
-        core: "gb",
+        core: "gambatte",
 
         extensions: [
             ".gb"
@@ -418,12 +390,11 @@ const systems = {
 
     },
 
-
     gbc: {
 
         name: "Nintendo Game Boy Color",
 
-        core: "gbc",
+        core: "gambatte",
 
         extensions: [
             ".gbc"
@@ -431,12 +402,11 @@ const systems = {
 
     },
 
-
     gba: {
 
         name: "Nintendo Game Boy Advance",
 
-        core: "gba",
+        core: "mgba",
 
         extensions: [
             ".gba"
@@ -445,294 +415,6 @@ const systems = {
     }
 
 };
-
-
-/*
-============================================================
-CHECK EXTENSION
-============================================================
-*/
-
-function matchesSystem(filename, systemName) {
-
-    const lower =
-        filename.toLowerCase();
-
-    return systems[systemName]
-        .extensions
-        .some(function(extension) {
-
-            return lower.endsWith(extension);
-
-        });
-
-}
-
-
-/*
-============================================================
-GITHUB ROM SCAN
-============================================================
-
-GitHub Pages cannot directly list a folder.
-
-Therefore we use the GitHub API to read:
-
-/roms/
-
-============================================================
-*/
-
-async function scanRoms() {
-
-    status.textContent =
-        "Scanning ROMs folder...";
-
-    romList.innerHTML = "";
-
-
-    const apiUrl =
-        "https://api.github.com/repos/Kadaz/Retro-Web-Emulator/contents/roms";
-
-
-    try {
-
-        const response =
-            await fetch(
-                apiUrl,
-                {
-                    cache: "no-store"
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "HTTP " +
-                response.status
-            );
-
-        }
-
-
-        const files =
-            await response.json();
-
-
-        if (!Array.isArray(files)) {
-
-            throw new Error(
-                "Invalid GitHub API response."
-            );
-
-        }
-
-
-        /*
-        Only files are accepted.
-        */
-
-        const roms =
-            files.filter(function(file) {
-
-                return file.type === "file";
-
-            });
-
-
-        if (roms.length === 0) {
-
-            status.textContent =
-                "No ROMs found in roms folder.";
-
-            return;
-
-        }
-
-
-        status.textContent =
-            roms.length +
-            " ROM(s) found. Select a system.";
-
-
-        /*
-        Display ROMs for current system.
-        */
-
-        showSystemRoms();
-
-
-    }
-    catch (error) {
-
-        status.innerHTML =
-            "✗ Could not scan roms folder.<br><br>" +
-            "<small>" +
-            error.message +
-            "</small>";
-
-        console.error(error);
-
-    }
-
-}
-
-
-/*
-============================================================
-ROM CACHE
-============================================================
-*/
-
-let availableRoms = [];
-
-
-/*
-============================================================
-SCAN ROMS AND STORE
-============================================================
-*/
-
-async function loadRomDatabase() {
-
-    status.textContent =
-        "Scanning ROMs folder...";
-
-
-    const apiUrl =
-        "https://api.github.com/repos/Kadaz/Retro-Web-Emulator/contents/roms";
-
-
-    try {
-
-        const response =
-            await fetch(
-                apiUrl,
-                {
-                    cache: "no-store"
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "HTTP " +
-                response.status
-            );
-
-        }
-
-
-        const files =
-            await response.json();
-
-
-        availableRoms =
-            files.filter(function(file) {
-
-                return file.type === "file";
-
-            });
-
-
-        showSystemRoms();
-
-
-    }
-    catch (error) {
-
-        status.innerHTML =
-            "✗ Could not scan roms folder.<br><br>" +
-            "<small>" +
-            error.message +
-            "</small>";
-
-        console.error(error);
-
-    }
-
-}
-
-
-/*
-============================================================
-SHOW ROMS FOR SELECTED SYSTEM
-============================================================
-*/
-
-function showSystemRoms() {
-
-    romList.innerHTML = "";
-
-
-    const system =
-        systems[selectedSystem];
-
-
-    const matching =
-        availableRoms.filter(function(file) {
-
-            return matchesSystem(
-                file.name,
-                selectedSystem
-            );
-
-        });
-
-
-    if (matching.length === 0) {
-
-        status.textContent =
-            "No " +
-            system.name +
-            " ROMs found.";
-
-        return;
-
-    }
-
-
-    status.textContent =
-        system.name +
-        " — " +
-        matching.length +
-        " ROM(s)";
-
-
-    matching.forEach(function(file) {
-
-        const button =
-            document.createElement("button");
-
-
-        button.className =
-            "romButton";
-
-
-        button.textContent =
-            file.name;
-
-
-        button.addEventListener(
-            "click",
-            function() {
-
-                startRom(
-                    file.download_url,
-                    file.name
-                );
-
-            }
-        );
-
-
-        romList.appendChild(button);
-
-    });
-
-}
 
 
 /*
@@ -753,23 +435,24 @@ document
                     .querySelectorAll("[data-system]")
                     .forEach(function(btn) {
 
-                        btn.classList.remove(
-                            "active"
-                        );
+                        btn.classList.remove("active");
 
                     });
 
-
-                button.classList.add(
-                    "active"
-                );
-
+                button.classList.add("active");
 
                 selectedSystem =
                     button.dataset.system;
 
+                const system =
+                    systems[selectedSystem];
 
-                showSystemRoms();
+                status.textContent =
+                    "Selected " +
+                    system.name +
+                    ".";
+
+                romUrl.value = "";
 
             }
         );
@@ -784,61 +467,76 @@ DEFAULT SYSTEM
 */
 
 document
-    .querySelector(
-        '[data-system="snes"]'
-    )
+    .querySelector('[data-system="snes"]')
     .classList.add("active");
 
 
 /*
 ============================================================
-START EMULATOR
+GET ROM URL
 ============================================================
 */
 
-function startRom(
-    romUrl,
-    romName
-) {
+function getRomUrl() {
+
+    const value =
+        romUrl.value.trim();
+
+    if (!value) {
+        return "";
+    }
+
+    return new URL(
+        value,
+        window.location.href
+    ).href;
+
+}
+
+
+/*
+============================================================
+CHECK ROM EXTENSION
+============================================================
+*/
+
+function checkExtension(url) {
 
     const system =
         systems[selectedSystem];
 
+    const cleanUrl =
+        url
+            .split("?")[0]
+            .split("#")[0]
+            .toLowerCase();
+
+    return system.extensions.some(
+        function(extension) {
+
+            return cleanUrl.endsWith(extension);
+
+        }
+    );
+
+}
+
+
+/*
+============================================================
+START EMULATORJS
+============================================================
+*/
+
+function loadEmulator(romUrlValue) {
+
+    const system =
+        systems[selectedSystem];
 
     status.textContent =
         "Starting " +
-        romName +
-        "...";
-
-
-    /*
-    ========================================================
-    EmulatorJS configuration
-    ========================================================
-    */
-
-    window.EJS_player =
-        "#game";
-
-
-    window.EJS_core =
-        system.core;
-
-
-    window.EJS_gameUrl =
-        romUrl;
-
-
-    window.EJS_gameName =
-        romName;
-
-
-    window.EJS_mouse =
-        false;
-
-
-    window.EJS_multitap =
-        false;
+        system.name +
+        " emulator...";
 
 
     /*
@@ -847,48 +545,46 @@ function startRom(
     ========================================================
     */
 
+    window.EJS_player =
+        "#game";
+
+    window.EJS_core =
+        system.core;
+
+    window.EJS_gameUrl =
+        romUrlValue;
+
+    window.EJS_mouse =
+        false;
+
+    window.EJS_multitap =
+        false;
+
+    /*
+    IMPORTANT:
+    EmulatorJS is now loaded from our GitHub Pages
+    repository instead of the external CDN.
+    */
+
     window.EJS_pathtodata =
         "./data/";
 
 
     /*
     ========================================================
-    IMPORTANT
-    ========================================================
-
-    We have genesis_plus_gx-legacy-wasm.data locally,
-    so force EmulatorJS to use legacy cores.
-
-    ========================================================
-    */
-
-    window.EJS_forceLegacyCores =
-        true;
-
-
-    /*
-    ========================================================
-    Remove previous emulator
+    REMOVE OLD EMULATOR
     ========================================================
     */
 
     gameContainer.innerHTML = "";
-
-
-    /*
-    Remove previous loader
-    */
 
     const oldLoader =
         document.getElementById(
             "emulatorjs-loader"
         );
 
-
     if (oldLoader) {
-
         oldLoader.remove();
-
     }
 
 
@@ -901,43 +597,210 @@ function startRom(
     const script =
         document.createElement("script");
 
-
     script.id =
         "emulatorjs-loader";
-
 
     script.src =
         "./data/loader.js";
 
-
     script.onload =
         function() {
 
-            emulatorStarted =
-                true;
-
+            emulatorStarted = true;
 
             status.textContent =
-                romName +
-                " loaded.";
+                system.name +
+                " emulator started.";
 
         };
-
 
     script.onerror =
         function() {
 
             status.textContent =
-                "✗ Could not load local EmulatorJS.";
+                "Could not load EmulatorJS loader.";
 
         };
 
-
-    document.body.appendChild(
-        script
-    );
+    document.body.appendChild(script);
 
 }
+
+
+/*
+============================================================
+LOAD ROM
+============================================================
+*/
+
+document
+    .getElementById("load")
+    .addEventListener(
+        "click",
+        async function() {
+
+            const value =
+                romUrl.value.trim();
+
+            if (!value) {
+
+                status.textContent =
+                    "Enter a ROM path first.";
+
+                return;
+
+            }
+
+            const absoluteUrl =
+                getRomUrl();
+
+            const system =
+                systems[selectedSystem];
+
+
+            if (!checkExtension(absoluteUrl)) {
+
+                status.textContent =
+                    "Warning: ROM extension does not normally " +
+                    "belong to " +
+                    system.name +
+                    ". Trying anyway...";
+
+            }
+            else {
+
+                status.textContent =
+                    "Checking ROM...";
+
+            }
+
+
+            /*
+            =================================================
+            HEAD REQUEST
+            =================================================
+            */
+
+            try {
+
+                const response =
+                    await fetch(
+                        absoluteUrl,
+                        {
+                            method: "HEAD",
+                            cache: "no-store"
+                        }
+                    );
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "HTTP " +
+                        response.status
+                    );
+
+                }
+
+                status.textContent =
+                    "ROM found. Starting emulator...";
+
+                loadEmulator(
+                    absoluteUrl
+                );
+
+            }
+            catch (headError) {
+
+                /*
+                =================================================
+                FALLBACK GET
+                =================================================
+                */
+
+                try {
+
+                    const response =
+                        await fetch(
+                            absoluteUrl,
+                            {
+                                method: "GET",
+                                cache: "no-store"
+                            }
+                        );
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "HTTP " +
+                            response.status
+                        );
+
+                    }
+
+                    status.textContent =
+                        "ROM found. Starting emulator...";
+
+                    loadEmulator(
+                        absoluteUrl
+                    );
+
+                }
+                catch (getError) {
+
+                    status.innerHTML =
+                        "Could not load ROM.<br><br>" +
+                        "<small>" +
+                        getError.message +
+                        "</small>";
+
+                }
+
+            }
+
+        }
+    );
+
+
+/*
+============================================================
+RESET
+============================================================
+*/
+
+document
+    .getElementById("reset")
+    .addEventListener(
+        "click",
+        function() {
+
+            location.reload();
+
+        }
+    );
+
+
+/*
+============================================================
+ENTER KEY
+============================================================
+*/
+
+romUrl.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            document
+                .getElementById("load")
+                .click();
+
+        }
+
+    }
+);
 
 
 /*
@@ -946,55 +809,51 @@ KEYBOARD FIX
 ============================================================
 */
 
-const emulatorKeys =
-    new Set([
+const emulatorKeys = new Set([
 
-        "ArrowUp",
-        "ArrowDown",
-        "ArrowLeft",
-        "ArrowRight",
+    "ArrowUp",
+    "ArrowDown",
+    "ArrowLeft",
+    "ArrowRight",
 
-        "Enter",
-        "Shift",
+    "Enter",
+    "Shift",
 
-        "Control",
-        "Alt",
+    "Control",
+    "Alt",
 
-        "z",
-        "x",
-        "a",
-        "s",
+    "z",
+    "x",
+    "a",
+    "s",
 
-        "Z",
-        "X",
-        "A",
-        "S",
+    "Z",
+    "X",
+    "A",
+    "S",
 
-        " "
+    " "
 
-    ]);
+]);
 
+
+/*
+============================================================
+KEY DOWN
+============================================================
+*/
 
 document.addEventListener(
     "keydown",
     function(event) {
 
         if (
-            emulatorKeys.has(event.key)
+            document.activeElement === romUrl
         ) {
 
-            event.preventDefault();
+            return;
 
         }
-
-    },
-    false
-);
-
-
-document.addEventListener(
-    "keyup",
-    function(event) {
 
         if (
             emulatorKeys.has(event.key)
@@ -1011,15 +870,35 @@ document.addEventListener(
 
 /*
 ============================================================
-START ROM DATABASE
+KEY UP
 ============================================================
 */
 
-loadRomDatabase();
+document.addEventListener(
+    "keyup",
+    function(event) {
 
+        if (
+            document.activeElement === romUrl
+        ) {
+
+            return;
+
+        }
+
+        if (
+            emulatorKeys.has(event.key)
+        ) {
+
+            event.preventDefault();
+
+        }
+
+    },
+    false
+);
 
 </script>
-
 
 </body>
 
