@@ -9,13 +9,11 @@
 <meta
 name="viewport"
 content="width=device-width, initial-scale=1.0"
-
 >
 
 <title>Retro Web Emulator</title>
 
 <!-- Retro favicon -->
-
 <link
 rel="icon"
 type="image/svg+xml"
@@ -28,7 +26,6 @@ href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 
     box-sizing: border-box;
 }
 
-
 html,
 body {
     margin: 0;
@@ -40,11 +37,9 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-
 body {
     overflow-x: hidden;
 }
-
 
 #app {
     width: 100%;
@@ -53,12 +48,10 @@ body {
     padding: 20px;
 }
 
-
 h1 {
     text-align: center;
     margin-top: 0;
 }
-
 
 .systems {
     display: flex;
@@ -68,157 +61,82 @@ h1 {
     margin-bottom: 20px;
 }
 
-
 .systems button {
-
     padding: 10px 15px;
-
     border: 1px solid #666;
-
     border-radius: 6px;
-
     background: #292929;
-
     color: white;
-
     cursor: pointer;
-
 }
-
 
 .systems button:hover {
     background: #3a3a3a;
 }
 
-
 .systems button.active {
     background: #555;
 }
 
-
 .panel {
-
     background: #191919;
-
     border: 1px solid #444;
-
     border-radius: 8px;
-
     padding: 15px;
-
 }
 
-
-#romSelect {
-
-    width: 100%;
-
-    padding: 12px;
-
-    background: #222;
-
-    color: white;
-
-    border: 1px solid #555;
-
-    border-radius: 6px;
-
-    font-size: 15px;
-
-}
-
-
+#romSelect,
 #pcFile {
-
     width: 100%;
-
     padding: 12px;
-
     background: #222;
-
     color: white;
-
     border: 1px solid #555;
-
     border-radius: 6px;
-
     font-size: 15px;
-
 }
-
 
 .controls {
-
     display: flex;
-
     flex-wrap: wrap;
-
     gap: 8px;
-
     margin: 12px 0;
-
 }
-
 
 .controls button {
-
     padding: 10px 18px;
-
     background: #292929;
-
     color: white;
-
     border: 1px solid #666;
-
     border-radius: 6px;
-
     cursor: pointer;
-
 }
-
 
 .controls button:hover {
     background: #3a3a3a;
 }
 
-
 #status {
-
     padding: 10px 0;
-
     color: #bbb;
-
 }
-
 
 #game {
-
     width: 100%;
-
     min-height: 600px;
-
     background: #000;
-
     position: relative;
-
 }
-
 
 .hidden {
     display: none;
 }
 
-
 .local-info {
-
     margin-top: 8px;
-
     color: #888;
-
     font-size: 13px;
-
 }
-
 
 @media (max-width: 700px) {
 
@@ -311,10 +229,9 @@ h1 {
 </select>
 
 <input
-type="file"
-id="pcFile"
-class="hidden"
-
+    type="file"
+    id="pcFile"
+    class="hidden"
 >
 
 <div
@@ -352,25 +269,30 @@ class="hidden"
 
 <script>
 
-
 /*
 ============================================================
 CONFIGURATION
 ============================================================
 */
 
-
 const DATA_PATH =
     "https://cdn.emulatorjs.org/stable/data/";
-
 
 const ROMS_PATH =
     "./roms/";
 
+/*
+GitHub Git Trees API
 
-const GITHUB_ROM_API =
-    "https://api.github.com/repos/Kadaz/Retro-Web-Emulator/contents/roms?ref=main";
+Unlike /contents/roms, this does not have
+the 1,000-files-per-directory limitation.
+*/
 
+const GITHUB_TREE_API =
+    "https://api.github.com/repos/Kadaz/Retro-Web-Emulator/git/trees/main?recursive=1";
+
+const GITHUB_RAW_PATH =
+    "https://raw.githubusercontent.com/Kadaz/Retro-Web-Emulator/main/";
 
 
 /*
@@ -379,9 +301,7 @@ SYSTEMS
 ============================================================
 */
 
-
 const SYSTEMS = {
-
 
     nes: {
 
@@ -399,7 +319,6 @@ const SYSTEMS = {
         ]
 
     },
-
 
     snes: {
 
@@ -420,7 +339,6 @@ const SYSTEMS = {
 
     },
 
-
     genesis: {
 
         name: "Mega Drive / Genesis",
@@ -432,11 +350,11 @@ const SYSTEMS = {
         extensions: [
             "md",
             "gen",
-            "smd"
+            "smd",
+            "bin"
         ]
 
     },
-
 
     sms: {
 
@@ -452,7 +370,6 @@ const SYSTEMS = {
 
     },
 
-
     gg: {
 
         name: "Game Gear",
@@ -466,7 +383,6 @@ const SYSTEMS = {
         ]
 
     },
-
 
     gb: {
 
@@ -483,7 +399,6 @@ const SYSTEMS = {
 
     },
 
-
     gbc: {
 
         name: "Game Boy Color",
@@ -498,7 +413,6 @@ const SYSTEMS = {
 
     },
 
-
     gba: {
 
         name: "Game Boy Advance",
@@ -512,7 +426,6 @@ const SYSTEMS = {
         ]
 
     },
-
 
     atari2600: {
 
@@ -529,7 +442,6 @@ const SYSTEMS = {
 
     },
 
-
     n64: {
 
         name: "Nintendo 64",
@@ -545,7 +457,6 @@ const SYSTEMS = {
         ]
 
     },
-
 
     psx: {
 
@@ -570,7 +481,6 @@ const SYSTEMS = {
 
     },
 
-
     nds: {
 
         name: "Nintendo DS",
@@ -584,7 +494,6 @@ const SYSTEMS = {
         ]
 
     },
-
 
     psp: {
 
@@ -607,25 +516,20 @@ const SYSTEMS = {
 };
 
 
-
 /*
 ============================================================
 CURRENT SYSTEM
 ============================================================
 */
 
-
 let currentSystem =
     "snes";
-
 
 let currentROM =
     null;
 
-
 let currentLocalFile =
     null;
-
 
 
 /*
@@ -634,26 +538,20 @@ ELEMENTS
 ============================================================
 */
 
-
 const romSelect =
     document.getElementById("romSelect");
-
 
 const pcFile =
     document.getElementById("pcFile");
 
-
 const localInfo =
     document.getElementById("localInfo");
-
 
 const status =
     document.getElementById("status");
 
-
 const game =
     document.getElementById("game");
-
 
 
 /*
@@ -662,13 +560,11 @@ GET SYSTEM
 ============================================================
 */
 
-
 function getSystem() {
 
     return SYSTEMS[currentSystem];
 
 }
-
 
 
 /*
@@ -677,19 +573,15 @@ CHECK EXTENSION
 ============================================================
 */
 
-
 function isSupported(filename) {
-
 
     const lower =
         filename.toLowerCase();
-
 
     const extension =
         lower.includes(".")
             ? lower.split(".").pop()
             : "";
-
 
     return getSystem()
         .extensions
@@ -698,16 +590,32 @@ function isSupported(filename) {
 }
 
 
-
 /*
 ============================================================
-LOAD ROMS FROM GITHUB
+ENCODE GITHUB PATH
 ============================================================
 */
 
+function encodeGitHubPath(path) {
+
+    return path
+        .split("/")
+        .map(
+            part =>
+                encodeURIComponent(part)
+        )
+        .join("/");
+
+}
+
+
+/*
+============================================================
+LOAD ROMS FROM GITHUB GIT TREE
+============================================================
+*/
 
 async function loadROMs() {
-
 
     const system =
         getSystem();
@@ -719,37 +627,29 @@ async function loadROMs() {
     --------------------------------------------------------
     */
 
-
     if (system.source === "pc") {
-
 
         romSelect.classList.add(
             "hidden"
         );
 
-
         pcFile.classList.remove(
             "hidden"
         );
-
 
         localInfo.classList.remove(
             "hidden"
         );
 
-
         pcFile.value =
             "";
-
 
         currentLocalFile =
             null;
 
-
         status.textContent =
             system.name +
             " — choose a game from your PC.";
-
 
         return;
 
@@ -762,25 +662,20 @@ async function loadROMs() {
     --------------------------------------------------------
     */
 
-
     romSelect.classList.remove(
         "hidden"
     );
-
 
     pcFile.classList.add(
         "hidden"
     );
 
-
     localInfo.classList.add(
         "hidden"
     );
 
-
     status.textContent =
         "Loading ROMs...";
-
 
     romSelect.innerHTML =
         '<option value="">Loading...</option>';
@@ -788,10 +683,14 @@ async function loadROMs() {
 
     try {
 
+        /*
+        Get the complete repository tree.
+        This replaces the old /contents/roms API.
+        */
 
         const response =
             await fetch(
-                GITHUB_ROM_API +
+                GITHUB_TREE_API +
                 "&t=" +
                 Date.now()
             );
@@ -800,38 +699,63 @@ async function loadROMs() {
         if (!response.ok) {
 
             throw new Error(
-                "GitHub API error: " +
+                "GitHub Tree API error: " +
                 response.status
             );
 
         }
 
 
-        const files =
+        const data =
             await response.json();
 
 
-        if (!Array.isArray(files)) {
+        if (
+            !data ||
+            !Array.isArray(data.tree)
+        ) {
 
             throw new Error(
-                "Invalid GitHub response"
+                "Invalid GitHub Tree response"
             );
 
         }
 
 
+        /*
+        ----------------------------------------------------
+        Find files inside /roms
+        ----------------------------------------------------
+        */
+
         const roms =
-            files
-                .filter(file =>
-                    file.type === "file" &&
-                    isSupported(file.name)
+            data.tree
+                .filter(
+                    file =>
+                        file.type === "blob" &&
+                        file.path.startsWith(
+                            "roms/"
+                        )
                 )
-                .sort((a, b) =>
-                    a.name.localeCompare(
-                        b.name
-                    )
+                .filter(
+                    file =>
+                        isSupported(
+                            file.path
+                        )
+                )
+                .sort(
+                    (a, b) =>
+                        a.path.localeCompare(
+                            b.path
+                        )
                 );
 
+
+        /*
+        ----------------------------------------------------
+        Build ROM list
+        ----------------------------------------------------
+        */
 
         romSelect.innerHTML =
             "";
@@ -856,8 +780,9 @@ async function loadROMs() {
         );
 
 
-        for (const rom of roms) {
-
+        for (
+            const rom of roms
+        ) {
 
             const option =
                 document.createElement(
@@ -865,12 +790,20 @@ async function loadROMs() {
                 );
 
 
+            /*
+            Store the complete repository
+            path instead of only the filename.
+            This also allows subfolders inside /roms.
+            */
+
             option.value =
-                rom.name;
+                rom.path;
 
 
             option.textContent =
-                rom.name;
+                rom.path.substring(
+                    "roms/".length
+                );
 
 
             romSelect.appendChild(
@@ -889,7 +822,6 @@ async function loadROMs() {
     }
     catch (error) {
 
-
         console.error(
             "ROM loading failed:",
             error
@@ -901,12 +833,12 @@ async function loadROMs() {
 
 
         status.textContent =
-            "Unable to load ROM list.";
+            "Unable to load ROM list: " +
+            error.message;
 
     }
 
 }
-
 
 
 /*
@@ -915,9 +847,7 @@ STOP PREVIOUS EMULATOR
 ============================================================
 */
 
-
 function stopPreviousEmulator() {
-
 
     try {
 
@@ -960,16 +890,13 @@ function stopPreviousEmulator() {
 }
 
 
-
 /*
 ============================================================
 START GAME
 ============================================================
 */
 
-
 function startGame() {
-
 
     const system =
         getSystem();
@@ -981,20 +908,19 @@ function startGame() {
     --------------------------------------------------------
     */
 
+    if (
+        system.source ===
+        "project"
+    ) {
 
-    if (system.source === "project") {
-
-
-        const filename =
+        const filepath =
             romSelect.value;
 
 
-        if (!filename) {
-
+        if (!filepath) {
 
             status.textContent =
                 "Select a game first.";
-
 
             return;
 
@@ -1002,7 +928,7 @@ function startGame() {
 
 
         currentROM =
-            filename;
+            filepath;
 
 
         currentLocalFile =
@@ -1012,17 +938,23 @@ function startGame() {
         stopPreviousEmulator();
 
 
+        /*
+        Use the actual repository path.
+
+        Example:
+
+        roms/SNES/game.sfc
+
+        becomes:
+
+        ./roms/SNES/game.sfc
+        */
+
         window.EJS_gameUrl =
-            ROMS_PATH +
-            filename
-                .split("/")
-                .map(
-                    part =>
-                        encodeURIComponent(
-                            part
-                        )
-                )
-                .join("/");
+            "./" +
+            encodeGitHubPath(
+                filepath
+            );
 
     }
 
@@ -1033,16 +965,12 @@ function startGame() {
     --------------------------------------------------------
     */
 
-
     else {
-
 
         if (!currentLocalFile) {
 
-
             status.textContent =
                 "Choose a ROM / ISO from your PC first.";
-
 
             return;
 
@@ -1057,10 +985,9 @@ function startGame() {
 
 
         /*
-        EmulatorJS officially accepts
-        the selected File object as EJS_gameUrl.
+        EmulatorJS accepts the selected
+        File object directly.
         */
-
 
         window.EJS_gameUrl =
             currentLocalFile;
@@ -1068,13 +995,11 @@ function startGame() {
     }
 
 
-
     /*
     --------------------------------------------------------
     EmulatorJS configuration
     --------------------------------------------------------
     */
-
 
     window.EJS_player =
         "#game";
@@ -1100,7 +1025,6 @@ function startGame() {
     PSP requires threads.
     */
 
-
     if (system.threads) {
 
         window.EJS_threads =
@@ -1121,7 +1045,6 @@ function startGame() {
     --------------------------------------------------------
     */
 
-
     status.textContent =
         "Loading " +
         system.name +
@@ -1133,7 +1056,6 @@ function startGame() {
     LOAD OFFICIAL STABLE LOADER
     --------------------------------------------------------
     */
-
 
     const loader =
         document.createElement(
@@ -1166,7 +1088,6 @@ function startGame() {
             status.textContent =
                 "ERROR: EmulatorJS loader could not be loaded.";
 
-
             console.error(
                 "Failed to load:",
                 loader.src
@@ -1182,29 +1103,23 @@ function startGame() {
 }
 
 
-
 /*
 ============================================================
 PC FILE SELECTION
 ============================================================
 */
 
-
 pcFile.addEventListener(
     "change",
     function() {
 
-
         if (!pcFile.files.length) {
-
 
             currentLocalFile =
                 null;
 
-
             status.textContent =
                 "No file selected.";
-
 
             return;
 
@@ -1235,20 +1150,16 @@ pcFile.addEventListener(
             )
         ) {
 
-
             currentLocalFile =
                 null;
-
 
             status.textContent =
                 "Unsupported file for " +
                 system.name +
                 ".";
 
-
             pcFile.value =
                 "";
-
 
             return;
 
@@ -1267,63 +1178,59 @@ pcFile.addEventListener(
 );
 
 
-
 /*
 ============================================================
 SYSTEM BUTTONS
 ============================================================
 */
 
-
 document
     .querySelectorAll(
         "[data-system]"
     )
-    .forEach(button => {
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                function() {
+
+                    document
+                        .querySelectorAll(
+                            "[data-system]"
+                        )
+                        .forEach(
+                            other =>
+                                other.classList.remove(
+                                    "active"
+                                )
+                        );
 
 
-        button.addEventListener(
-            "click",
-            function() {
-
-
-                document
-                    .querySelectorAll(
-                        "[data-system]"
-                    )
-                    .forEach(
-                        other =>
-                            other.classList.remove(
-                                "active"
-                            )
+                    button.classList.add(
+                        "active"
                     );
 
 
-                button.classList.add(
-                    "active"
-                );
+                    currentSystem =
+                        button.dataset.system;
 
 
-                currentSystem =
-                    button.dataset.system;
+                    currentROM =
+                        null;
 
 
-                currentROM =
-                    null;
+                    currentLocalFile =
+                        null;
 
 
-                currentLocalFile =
-                    null;
+                    loadROMs();
 
+                }
+            );
 
-                loadROMs();
-
-            }
-
-        );
-
-    });
-
+        }
+    );
 
 
 /*
@@ -1331,7 +1238,6 @@ document
 PLAY
 ============================================================
 */
-
 
 document
     .getElementById("play")
@@ -1341,13 +1247,11 @@ document
     );
 
 
-
 /*
 ============================================================
 REFRESH
 ============================================================
 */
-
 
 document
     .getElementById("refresh")
@@ -1357,13 +1261,11 @@ document
     );
 
 
-
 /*
 ============================================================
 RESET
 ============================================================
 */
-
 
 document
     .getElementById("reset")
@@ -1377,13 +1279,11 @@ document
     );
 
 
-
 /*
 ============================================================
 DEFAULT SYSTEM
 ============================================================
 */
-
 
 document
     .querySelector(
@@ -1394,16 +1294,13 @@ document
     );
 
 
-
 /*
 ============================================================
 INITIAL LOAD
 ============================================================
 */
 
-
 loadROMs();
-
 
 </script>
 
