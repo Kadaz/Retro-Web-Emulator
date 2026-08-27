@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <identifier>sonicthehedgehogusaeurope_202002</identifier>
+  <mediatype>movies</mediatype>
+  <collection>game_replays</collection>
+  <description>&lt;p style="text-indent:.5cm;font-family:Arial, Helvetica, sans-serif;font-size:15px;background-color:rgb(247,250,252);"&gt;This hack aims to fix as many bugs as possible using SCHG tutorials online. Fixes:&lt;/p&gt;&lt;ul style="font-family:Arial, Helvetica, sans-serif;font-size:15px;background-color:rgb(247,250,252);"&gt;&lt;li&gt;Dynamic Palettes Per-Act (Optional)&lt;/li&gt;&lt;li&gt;Fixed Demo Playback (Unnoticeable and not needed as speed cap fix ruins this)&lt;/li&gt;&lt;li&gt;“PRESS START BUTTON” appears&lt;/li&gt;&lt;li&gt;Walk-Jump Removed&lt;/li&gt;&lt;li&gt;Fixed Ring Timers and added quick blink animation&lt;/li&gt;&lt;li&gt;Special Stage jumping responds to button presses like the normal jump (hold to jump higher)&lt;/li&gt;&lt;li&gt;Sonic collides with water after being damaged&lt;/li&gt;&lt;li&gt;Removed speed cap (mentioned above)&lt;/li&gt;&lt;li&gt;Sonic now has the Super Dash Attack or Spin Dash from Sonic 2&lt;/li&gt;&lt;li&gt;Fixed the death boundary bug&lt;/li&gt;&lt;li&gt;Fixed the camera follow bug (barely noticeable in-game)&lt;/li&gt;&lt;li&gt;Fixed the water palette on the Title Screen to be consistent with gameplay&lt;/li&gt;&lt;li&gt;Spike Behavior fixed&lt;/li&gt;&lt;li&gt;Sonic’s walking animation has been tweaked to look like the 2013 mobile version and Sonic movie credits&lt;/li&gt;&lt;li&gt;Fixed a “remember sprite” bug where objects appear destroyed when they aren’t when RAM is full (only noticable in Debug Mode)&lt;/li&gt;&lt;li&gt;REV01 Background effects ported&lt;/li&gt;&lt;li&gt;Fixed scattered Rings underwater physics&lt;/li&gt;&lt;/ul&gt;</description>
+  <scanner>Internet Archive HTML5 Uploader 1.6.4</scanner>
+  <subject>Sonic Hedghog</subject>
+  <subject>Genesis</subject>
+  <subject>hacks</subject>
+  <title>Sonic The Hedgehog ( USA, Europe)</title>
+  <uploader>doom@inbox.com</uploader>
+  <publicdate>2020-02-23 12:17:06</publicdate>
+  <addeddate>2020-02-23 12:17:06</addeddate>
+  <curation>[curator]validator@archive.org[/curator][date]20200223122221[/date][comment]checked for malware[/comment]</curation>
+  <collection>gamevideos</collection>
+  <backup_location>ia907105_25</backup_location>
+</metadata>
