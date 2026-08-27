@@ -25,6 +25,7 @@
             background: #111;
             color: #eee;
             font-family: Arial, sans-serif;
+            min-height: 100%;
         }
 
         body {
@@ -38,9 +39,14 @@
         }
 
         h1 {
-            margin-top: 0;
+            margin: 0 0 15px 0;
             text-align: center;
         }
+
+
+        /* ==================================================
+           SYSTEM BUTTONS
+           ================================================== */
 
         .tabs {
             display: flex;
@@ -68,12 +74,22 @@
             outline: 2px solid #aaa;
         }
 
+
+        /* ==================================================
+           PANEL
+           ================================================== */
+
         .panel {
             background: #191919;
             border: 1px solid #444;
             padding: 14px;
             border-radius: 8px;
         }
+
+
+        /* ==================================================
+           ROM ROW
+           ================================================== */
 
         .row {
             display: flex;
@@ -108,24 +124,48 @@
             background: #383838;
         }
 
+
+        /* ==================================================
+           STATUS
+           ================================================== */
+
         #status {
             color: #bbb;
             min-height: 24px;
             padding: 8px 0;
         }
 
+
+        /* ==================================================
+           EMULATOR AREA
+           
+           Important:
+           Do NOT force a fixed 600px height.
+           
+           EmulatorJS has its own controls at the bottom.
+           We give it enough room so volume and other controls
+           are not hidden.
+           ================================================== */
+
         .screen {
             background: #000;
             margin-top: 12px;
             width: 100%;
-            min-height: 480px;
             position: relative;
+            overflow: visible;
         }
 
         #game {
             width: 100%;
-            height: 600px;
+            height: calc(100vh - 250px);
+            min-height: 480px;
+            position: relative;
         }
+
+
+        /* ==================================================
+           INFORMATION
+           ================================================== */
 
         .info {
             color: #999;
@@ -133,18 +173,56 @@
             line-height: 1.5;
         }
 
+
+        /* ==================================================
+           SMALL SCREENS
+           ================================================== */
+
+        @media (max-width: 700px) {
+
+            .app {
+                padding: 8px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .tabs {
+                gap: 5px;
+            }
+
+            .tabs button {
+                padding: 9px 10px;
+                font-size: 12px;
+            }
+
+            #game {
+                height: calc(100vh - 260px);
+                min-height: 400px;
+            }
+
+        }
+
     </style>
 
 </head>
 
+
 <body>
+
 
 <div class="app">
 
-    <h1>Retro Web Emulator</h1>
+
+    <h1>
+        Retro Web Emulator
+    </h1>
 
 
-    <!-- SYSTEM SELECTION -->
+    <!-- ==================================================
+         SYSTEM SELECTION
+         ================================================== -->
 
     <div class="tabs">
 
@@ -183,9 +261,14 @@
     </div>
 
 
-    <!-- EMULATOR PANEL -->
+    <!-- ==================================================
+         MAIN PANEL
+         ================================================== -->
 
     <div class="panel">
+
+
+        <!-- ROM INPUT -->
 
         <div class="row">
 
@@ -207,10 +290,16 @@
         </div>
 
 
+        <!-- STATUS -->
+
         <div id="status">
             Choose a system and enter a ROM path.
         </div>
 
+
+        <!-- ==================================================
+             EMULATOR
+             ================================================== -->
 
         <div class="screen">
 
@@ -221,12 +310,14 @@
 
         <p class="info">
 
-            Keyboard and compatible gamepads are handled by EmulatorJS.
-            Save data is handled by the emulator/core.
+            Keyboard and compatible gamepads are handled by
+            EmulatorJS. Save data is handled by the emulator/core.
 
         </p>
 
+
     </div>
+
 
 </div>
 
@@ -403,6 +494,10 @@ document
             "click",
             function() {
 
+                /*
+                Remove active state
+                */
+
                 document
                     .querySelectorAll("[data-system]")
                     .forEach(function(btn) {
@@ -411,6 +506,10 @@ document
 
                     });
 
+
+                /*
+                Set active system
+                */
 
                 button.classList.add("active");
 
@@ -430,7 +529,7 @@ document
 
 
                 /*
-                Clear ROM path when changing system.
+                Clear ROM input
                 */
 
                 romUrl.value = "";
@@ -528,9 +627,9 @@ function loadEmulator(romUrlValue) {
 
 
     /*
-    --------------------------------------------------------
+    ========================================================
     EmulatorJS configuration
-    --------------------------------------------------------
+    ========================================================
     */
 
     window.EJS_player =
@@ -558,18 +657,35 @@ function loadEmulator(romUrlValue) {
 
 
     /*
-    --------------------------------------------------------
-    Clear previous emulator
-    --------------------------------------------------------
+    ========================================================
+    Remove old emulator
+    ========================================================
     */
 
     gameContainer.innerHTML = "";
 
 
     /*
-    --------------------------------------------------------
-    Load EmulatorJS loader
-    --------------------------------------------------------
+    Remove old loader if it exists
+    */
+
+    const oldLoader =
+        document.getElementById(
+            "emulatorjs-loader"
+        );
+
+
+    if (oldLoader) {
+
+        oldLoader.remove();
+
+    }
+
+
+    /*
+    ========================================================
+    Load EmulatorJS
+    ========================================================
     */
 
     const script =
@@ -623,6 +739,7 @@ document
         "click",
         async function() {
 
+
             const value =
                 romUrl.value.trim();
 
@@ -646,9 +763,9 @@ document
 
 
             /*
-            ------------------------------------------------
+            =================================================
             Extension check
-            ------------------------------------------------
+            =================================================
             */
 
             if (!checkExtension(absoluteUrl)) {
@@ -669,9 +786,9 @@ document
 
 
             /*
-            ------------------------------------------------
-            First try HEAD
-            ------------------------------------------------
+            =================================================
+            Try HEAD request
+            =================================================
             */
 
             try {
@@ -708,11 +825,12 @@ document
             }
             catch (headError) {
 
+
                 /*
-                --------------------------------------------
-                Some local/web servers don't support HEAD.
+                =================================================
+                Some servers don't support HEAD.
                 Try GET.
-                --------------------------------------------
+                =================================================
                 */
 
                 try {
@@ -810,18 +928,12 @@ romUrl.addEventListener(
 KEYBOARD FIX
 ============================================================
 
-IMPORTANT:
-
-We only block browser handling for game keys.
-
-We DO NOT modify EmulatorJS key mapping.
-
-This allows EmulatorJS to receive the original
-keydown / keyup events normally.
+We prevent the browser from using the game keys for its
+own actions, while allowing EmulatorJS to receive the
+original keyboard events.
 
 ============================================================
 */
-
 
 const emulatorKeys = new Set([
 
@@ -852,9 +964,9 @@ const emulatorKeys = new Set([
 
 
 /*
-------------------------------------------------------------
+============================================================
 KEY DOWN
-------------------------------------------------------------
+============================================================
 */
 
 document.addEventListener(
@@ -862,7 +974,7 @@ document.addEventListener(
     function(event) {
 
         /*
-        Never interfere with the ROM input box.
+        Don't interfere while typing ROM path.
         */
 
         if (
@@ -879,10 +991,11 @@ document.addEventListener(
         ) {
 
             /*
-            Stop browser scrolling and UI actions.
+            Prevent browser scrolling / UI actions.
 
-            EmulatorJS still receives the event because
-            we are NOT stopping propagation.
+            IMPORTANT:
+            We do NOT stop propagation.
+            EmulatorJS can still receive the event.
             */
 
             event.preventDefault();
@@ -895,9 +1008,9 @@ document.addEventListener(
 
 
 /*
-------------------------------------------------------------
+============================================================
 KEY UP
-------------------------------------------------------------
+============================================================
 */
 
 document.addEventListener(
@@ -905,7 +1018,7 @@ document.addEventListener(
     function(event) {
 
         /*
-        Never interfere with the ROM input box.
+        Don't interfere while typing ROM path.
         */
 
         if (
