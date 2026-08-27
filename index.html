@@ -5,13 +5,10 @@
 
 <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>Retro Web Emulator</title>
-
 
 <style>
 
@@ -21,49 +18,26 @@
 
 html,
 body {
-
     margin: 0;
     padding: 0;
-
     background: #111;
     color: #eee;
-
     font-family: Arial, sans-serif;
-
 }
 
 body {
-
     min-height: 100vh;
-
 }
-
-
-/* =========================================================
-   MAIN APP
-   ========================================================= */
 
 .app {
-
     max-width: 1100px;
-
     margin: auto;
-
     padding: 18px;
-
 }
 
-
 h1 {
-
-    margin:
-        0
-        0
-        15px
-        0;
-
+    margin: 0 0 15px;
     text-align: center;
-
 }
 
 
@@ -72,58 +46,29 @@ h1 {
    ========================================================= */
 
 .tabs {
-
     display: flex;
-
     gap: 8px;
-
     flex-wrap: wrap;
-
     justify-content: center;
-
     margin: 15px 0;
-
 }
-
 
 .tabs button {
-
-    padding:
-        11px
-        16px;
-
+    padding: 11px 16px;
     border-radius: 6px;
-
-    border:
-        1px
-        solid
-        #666;
-
+    border: 1px solid #666;
     background: #292929;
-
     color: white;
-
     cursor: pointer;
-
 }
-
 
 .tabs button:hover {
-
     background: #383838;
-
 }
 
-
 .tabs button.active {
-
     background: #555;
-
-    outline:
-        2px
-        solid
-        #aaa;
-
+    outline: 2px solid #aaa;
 }
 
 
@@ -132,18 +77,10 @@ h1 {
    ========================================================= */
 
 .panel {
-
     background: #191919;
-
-    border:
-        1px
-        solid
-        #444;
-
+    border: 1px solid #444;
     padding: 14px;
-
     border-radius: 8px;
-
 }
 
 
@@ -152,68 +89,36 @@ h1 {
    ========================================================= */
 
 .row {
-
     display: flex;
-
     gap: 8px;
-
     flex-wrap: wrap;
-
     margin: 10px 0;
-
 }
-
 
 select,
 button {
-
     padding: 10px;
-
     border-radius: 6px;
-
     font-size: 14px;
-
 }
-
 
 select {
-
     background: #222;
-
     color: white;
-
-    border:
-        1px
-        solid
-        #555;
-
+    border: 1px solid #555;
     flex: 1;
-
     min-width: 300px;
-
 }
-
 
 button {
-
     background: #292929;
-
     color: white;
-
-    border:
-        1px
-        solid
-        #666;
-
+    border: 1px solid #666;
     cursor: pointer;
-
 }
 
-
 button:hover {
-
     background: #383838;
-
 }
 
 
@@ -222,75 +127,53 @@ button:hover {
    ========================================================= */
 
 #status {
-
     color: #bbb;
-
     min-height: 24px;
-
     padding: 8px 0;
-
 }
 
 
 /* =========================================================
    EMULATOR
+
+   FULL WIDTH — IMPORTANT FOR EMULATORJS CONTROLS
    ========================================================= */
 
-/*
-IMPORTANT:
-
-EmulatorJS gets the full browser width.
-
-This prevents its bottom controls and volume
-slider from being squeezed into the 1100px panel.
-*/
-
 .screen {
-
     background: #000;
-
-    margin-top: 12px;
 
     width: 100vw;
 
-    margin-left:
-        calc(50% - 50vw);
+    margin-left: calc(50% - 50vw);
+
+    margin-top: 12px;
 
     position: relative;
 
     overflow: visible;
-
 }
 
-
 #game {
-
     width: 100%;
 
-    height:
-        calc(100vh - 45px);
+    height: calc(100vh - 45px);
 
     min-height: 480px;
 
     position: relative;
 
     overflow: visible;
-
 }
 
 
 /* =========================================================
-   INFORMATION
+   INFO
    ========================================================= */
 
 .info {
-
     color: #999;
-
     font-size: 13px;
-
     line-height: 1.5;
-
 }
 
 
@@ -301,51 +184,29 @@ slider from being squeezed into the 1100px panel.
 @media (max-width: 700px) {
 
     .app {
-
         padding: 8px;
-
     }
-
 
     h1 {
-
         font-size: 22px;
-
     }
-
 
     .tabs {
-
         gap: 5px;
-
     }
-
 
     .tabs button {
-
-        padding:
-            9px
-            10px;
-
+        padding: 9px 10px;
         font-size: 12px;
-
     }
-
 
     select {
-
         min-width: 200px;
-
     }
 
-
     #game {
-
-        height:
-            calc(100vh - 45px);
-
+        height: calc(100vh - 45px);
         min-height: 400px;
-
     }
 
 }
@@ -360,14 +221,11 @@ slider from being squeezed into the 1100px panel.
 
 <div class="app">
 
-
-<h1>
-    Retro Web Emulator
-</h1>
+<h1>Retro Web Emulator</h1>
 
 
 <!-- =====================================================
-     SYSTEM SELECTION
+     SYSTEMS
      ===================================================== -->
 
 <div class="tabs">
@@ -407,42 +265,36 @@ slider from being squeezed into the 1100px panel.
 </div>
 
 
-<!-- =====================================================
-     MAIN PANEL
-     ===================================================== -->
-
 <div class="panel">
 
 
-<div class="row">
+<!-- =====================================================
+     ROM LIST
+     ===================================================== -->
 
+<div class="row">
 
 <select id="romSelect">
 
 <option value="">
-    Scanning GitHub roms folder...
+    Scanning ROMs...
 </option>
 
 </select>
-
 
 <button id="load">
     Load ROM
 </button>
 
-
 <button id="reset">
     Reset
 </button>
-
 
 </div>
 
 
 <div id="status">
-
-Scanning GitHub repository for ROMs...
-
+    Scanning GitHub ROM folder...
 </div>
 
 
@@ -460,13 +312,12 @@ Scanning GitHub repository for ROMs...
 <p class="info">
 
 ROMs are automatically detected from the
-<strong>roms</strong> folder of the GitHub repository.
+<strong>roms</strong> folder.
 
 </p>
 
 
 </div>
-
 
 </div>
 
@@ -475,38 +326,27 @@ ROMs are automatically detected from the
 
 
 /* ========================================================
-   CONFIGURATION
+   GITHUB CONFIGURATION
    ======================================================== */
-
-
-/*
-GitHub repository.
-
-Your GitHub Pages address is:
-
-https://kadaz.github.io/retro-test/
-
-Therefore the repository is:
-
-kadaz / retro-test
-*/
 
 const GITHUB_OWNER =
     "kadaz";
 
-const GITHUB_REPO =
-    "retro-test";
+const GITHUB_REPOSITORY =
+    "Retro-Web-Emulator";
 
 const ROM_FOLDER =
     "roms";
 
 
+/* ========================================================
+   STATE
+   ======================================================== */
+
 let selectedSystem =
     "snes";
 
-
-let romDatabase =
-    {};
+let romDatabase = {};
 
 
 /* ========================================================
@@ -514,160 +354,128 @@ let romDatabase =
    ======================================================== */
 
 const status =
-    document.getElementById(
-        "status"
-    );
-
+    document.getElementById("status");
 
 const romSelect =
-    document.getElementById(
-        "romSelect"
-    );
-
+    document.getElementById("romSelect");
 
 const gameContainer =
-    document.getElementById(
-        "game"
-    );
+    document.getElementById("game");
 
 
 /* ========================================================
-   SYSTEM INFORMATION
+   SYSTEMS
    ======================================================== */
 
 const systems = {
 
     snes: {
 
-        name:
-            "Super Nintendo / SNES",
+        name: "SNES",
 
-        core:
-            "snes",
+        core: "snes",
 
-        extensions:
-            [
-                ".sfc",
-                ".smc",
-                ".fig",
-                ".swc"
-            ]
+        extensions: [
+            ".sfc",
+            ".smc",
+            ".fig",
+            ".swc"
+        ]
 
     },
 
 
     nes: {
 
-        name:
-            "Nintendo Entertainment System / NES",
+        name: "NES",
 
-        core:
-            "nes",
+        core: "nes",
 
-        extensions:
-            [
-                ".nes",
-                ".fds"
-            ]
+        extensions: [
+            ".nes",
+            ".fds"
+        ]
 
     },
 
 
     segaMS: {
 
-        name:
-            "Sega Master System",
+        name: "Master System",
 
-        core:
-            "segaMS",
+        core: "segaMS",
 
-        extensions:
-            [
-                ".sms"
-            ]
+        extensions: [
+            ".sms"
+        ]
 
     },
 
 
     segaMD: {
 
-        name:
-            "Sega Mega Drive / Genesis",
+        name: "Mega Drive / Genesis",
 
-        core:
-            "segaMD",
+        core: "segaMD",
 
-        extensions:
-            [
-                ".md",
-                ".gen",
-                ".smd",
-                ".bin"
-            ]
+        extensions: [
+            ".md",
+            ".gen",
+            ".smd",
+            ".bin"
+        ]
 
     },
 
 
     segaGG: {
 
-        name:
-            "Sega Game Gear",
+        name: "Game Gear",
 
-        core:
-            "segaGG",
+        core: "segaGG",
 
-        extensions:
-            [
-                ".gg"
-            ]
+        extensions: [
+            ".gg"
+        ]
 
     },
 
 
     gb: {
 
-        name:
-            "Nintendo Game Boy",
+        name: "Game Boy",
 
-        core:
-            "gb",
+        core: "gb",
 
-        extensions:
-            [
-                ".gb"
-            ]
+        extensions: [
+            ".gb"
+        ]
 
     },
 
 
     gbc: {
 
-        name:
-            "Nintendo Game Boy Color",
+        name: "Game Boy Color",
 
-        core:
-            "gbc",
+        core: "gbc",
 
-        extensions:
-            [
-                ".gbc"
-            ]
+        extensions: [
+            ".gbc"
+        ]
 
     },
 
 
     gba: {
 
-        name:
-            "Nintendo Game Boy Advance",
+        name: "Game Boy Advance",
 
-        core:
-            "gba",
+        core: "gba",
 
-        extensions:
-            [
-                ".gba"
-            ]
+        extensions: [
+            ".gba"
+        ]
 
     }
 
@@ -675,26 +483,23 @@ const systems = {
 
 
 /* ========================================================
-   CHECK ROM EXTENSION
+   CHECK EXTENSION
    ======================================================== */
 
-function belongsToSystem(
+function isSystemRom(
     filename,
     systemId
 ) {
 
-    const system =
-        systems[systemId];
-
-
-    const lower =
+    const name =
         filename.toLowerCase();
 
-
-    return system.extensions.some(
+    return systems[
+        systemId
+    ].extensions.some(
         function(extension) {
 
-            return lower.endsWith(
+            return name.endsWith(
                 extension
             );
 
@@ -705,22 +510,10 @@ function belongsToSystem(
 
 
 /* ========================================================
-   GITHUB ROM SCANNER
+   GITHUB API ROM SCANNER
    ======================================================== */
 
-/*
-GitHub Pages cannot run PHP.
-
-Instead we ask the GitHub API:
-
-GET
-https://api.github.com/repos/kadaz/retro-test/contents/roms
-
-GitHub returns the actual files inside roms/.
-*/
-
-async function scanGitHubRoms() {
-
+async function scanRoms() {
 
     status.textContent =
         "Scanning GitHub roms folder...";
@@ -730,20 +523,20 @@ async function scanGitHubRoms() {
         "https://api.github.com/repos/" +
         GITHUB_OWNER +
         "/" +
-        GITHUB_REPO +
+        GITHUB_REPOSITORY +
         "/contents/" +
         ROM_FOLDER;
 
 
     try {
 
-
         const response =
             await fetch(
                 apiUrl,
                 {
-                    cache:
-                        "no-store",
+                    method: "GET",
+
+                    cache: "no-store",
 
                     headers: {
                         "Accept":
@@ -756,7 +549,7 @@ async function scanGitHubRoms() {
         if (!response.ok) {
 
             throw new Error(
-                "GitHub API HTTP " +
+                "GitHub API returned HTTP " +
                 response.status
             );
 
@@ -770,7 +563,7 @@ async function scanGitHubRoms() {
         if (!Array.isArray(files)) {
 
             throw new Error(
-                "GitHub did not return a file list."
+                "The GitHub API did not return a file list."
             );
 
         }
@@ -778,12 +571,9 @@ async function scanGitHubRoms() {
 
         /*
         ================================================
-        Create database
+        Create empty system lists
         ================================================
         */
-
-        romDatabase = {};
-
 
         Object.keys(
             systems
@@ -800,17 +590,12 @@ async function scanGitHubRoms() {
 
         /*
         ================================================
-        Process every file
+        Process files
         ================================================
         */
 
         files.forEach(
             function(file) {
-
-
-                /*
-                Only actual files.
-                */
 
                 if (
                     file.type !==
@@ -822,40 +607,17 @@ async function scanGitHubRoms() {
                 }
 
 
-                /*
-                Check which system
-                this ROM belongs to.
-                */
-
                 Object.keys(
                     systems
                 ).forEach(
                     function(systemId) {
 
-
                         if (
-                            belongsToSystem(
+                            isSystemRom(
                                 file.name,
                                 systemId
                             )
                         ) {
-
-
-                            /*
-                            Use GitHub Pages URL.
-
-                            Example:
-
-                            roms/super-metroid.sfc
-                            */
-
-                            const romUrl =
-                                ROM_FOLDER +
-                                "/" +
-                                encodeURIComponent(
-                                    file.name
-                                );
-
 
                             romDatabase[
                                 systemId
@@ -864,8 +626,21 @@ async function scanGitHubRoms() {
                                 name:
                                     file.name,
 
+                                /*
+                                Use the GitHub Pages
+                                relative URL.
+
+                                This is important because
+                                the repository is a GitHub
+                                Pages website.
+                                */
+
                                 url:
-                                    romUrl
+                                    ROM_FOLDER +
+                                    "/" +
+                                    encodeURIComponent(
+                                        file.name
+                                    )
 
                             });
 
@@ -880,7 +655,7 @@ async function scanGitHubRoms() {
 
         /*
         ================================================
-        Sort each system
+        Sort
         ================================================
         */
 
@@ -888,7 +663,6 @@ async function scanGitHubRoms() {
             romDatabase
         ).forEach(
             function(systemId) {
-
 
                 romDatabase[
                     systemId
@@ -899,11 +673,8 @@ async function scanGitHubRoms() {
                             b.name,
                             undefined,
                             {
-                                numeric:
-                                    true,
-
-                                sensitivity:
-                                    "base"
+                                numeric: true,
+                                sensitivity: "base"
                             }
                         );
 
@@ -916,11 +687,11 @@ async function scanGitHubRoms() {
 
         /*
         ================================================
-        Update UI
+        Show selected system
         ================================================
         */
 
-        filterRomList();
+        filterRoms();
 
 
         let total =
@@ -942,32 +713,27 @@ async function scanGitHubRoms() {
 
 
         status.textContent =
-            "✓ GitHub scan complete. Found " +
+            "✓ Found " +
             total +
-            " ROM(s).";
+            " ROM(s) automatically.";
 
 
     }
     catch (error) {
 
-
         romSelect.innerHTML =
             "";
-
 
         const option =
             document.createElement(
                 "option"
             );
 
-
         option.value =
             "";
 
-
         option.textContent =
-            "Could not scan GitHub ROMs";
-
+            "Could not scan ROMs";
 
         romSelect.appendChild(
             option
@@ -986,11 +752,10 @@ async function scanGitHubRoms() {
 
 
 /* ========================================================
-   FILTER ROM LIST
+   FILTER ROMS
    ======================================================== */
 
-function filterRomList() {
-
+function filterRoms() {
 
     romSelect.innerHTML =
         "";
@@ -1027,7 +792,6 @@ function filterRomList() {
 
     roms.forEach(
         function(rom) {
-
 
             const option =
                 document.createElement(
@@ -1068,9 +832,8 @@ function filterRomList() {
    ======================================================== */
 
 function startEmulator(
-    romUrl
+    rom
 ) {
-
 
     const system =
         systems[
@@ -1085,9 +848,9 @@ function startEmulator(
 
 
     /*
-    ====================================================
-    EmulatorJS configuration
-    ====================================================
+    ================================================
+    EmulatorJS settings
+    ================================================
     */
 
     window.EJS_player =
@@ -1100,7 +863,7 @@ function startEmulator(
 
     window.EJS_gameUrl =
         new URL(
-            romUrl,
+            rom,
             window.location.href
         ).href;
 
@@ -1118,20 +881,14 @@ function startEmulator(
 
 
     /*
-    ====================================================
-    Clear previous emulator
-    ====================================================
+    ================================================
+    Remove old emulator
+    ================================================
     */
 
     gameContainer.innerHTML =
         "";
 
-
-    /*
-    ====================================================
-    Remove previous loader
-    ====================================================
-    */
 
     const oldLoader =
         document.getElementById(
@@ -1147,9 +904,9 @@ function startEmulator(
 
 
     /*
-    ====================================================
+    ================================================
     Load EmulatorJS
-    ====================================================
+    ================================================
     */
 
     const script =
@@ -1203,7 +960,6 @@ document
         "click",
         function() {
 
-
             const rom =
                 romSelect.value;
 
@@ -1234,15 +990,12 @@ romSelect.addEventListener(
     "dblclick",
     function() {
 
-
         const rom =
             romSelect.value;
 
 
         if (!rom) {
-
             return;
-
         }
 
 
@@ -1255,22 +1008,6 @@ romSelect.addEventListener(
 
 
 /* ========================================================
-   RESET
-   ======================================================== */
-
-document
-    .getElementById("reset")
-    .addEventListener(
-        "click",
-        function() {
-
-            location.reload();
-
-        }
-    );
-
-
-/* ========================================================
    SYSTEM BUTTONS
    ======================================================== */
 
@@ -1280,7 +1017,6 @@ document
     )
     .forEach(
         function(button) {
-
 
             button.addEventListener(
                 "click",
@@ -1311,7 +1047,7 @@ document
                         button.dataset.system;
 
 
-                    filterRomList();
+                    filterRoms();
 
                 }
             );
@@ -1366,14 +1102,9 @@ const emulatorKeys =
     ]);
 
 
-/* ========================================================
-   KEY DOWN
-   ======================================================== */
-
 document.addEventListener(
     "keydown",
     function(event) {
-
 
         if (
             emulatorKeys.has(
@@ -1389,16 +1120,11 @@ document.addEventListener(
     false
 );
 
-
-/* ========================================================
-   KEY UP
-   ======================================================== */
 
 document.addEventListener(
     "keyup",
     function(event) {
 
-
         if (
             emulatorKeys.has(
                 event.key
@@ -1415,11 +1141,26 @@ document.addEventListener(
 
 
 /* ========================================================
-   START
+   RESET
    ======================================================== */
 
-scanGitHubRoms();
+document
+    .getElementById("reset")
+    .addEventListener(
+        "click",
+        function() {
 
+            location.reload();
+
+        }
+    );
+
+
+/* ========================================================
+   START AUTOMATIC SCAN
+   ======================================================== */
+
+scanRoms();
 
 </script>
 
