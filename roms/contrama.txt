@@ -1,0 +1,208 @@
+[Transcribed by Peter Halvorson, phalvorson@panacom.com]
+
+How to Play...
+
+Contra [Konami]
+
+Copyright 1987
+
+Congratulations!  You now own the authentic Konami home version of Contra,
+one of Konami's many original arcade hits.  We suggest that you read this
+instruction manual thoroughly before playing the game.
+
+Table of Contents:
+- Introduction / How To Play
+- The Heroes
+- Controlling Your Commando
+- Controlling Your Commando In 3-D
+- Red Falcon's Defenses
+- Powering-Up
+- Taking Care of Your Game
+
+ONLY THE STRONG SURVIVE
+
+In 1957 a large object from outer space crashed into Earth's Amazon basin,
+near ruins of the lost Mayan civilization.  Scientists world-wide heralded
+the incident as a trivial cosmic occurrence, and thus the collision was soon
+forgotten.
+
+Now, thirty years later, rumors of an evil force have swept into the
+Pentagon's front office, and tales from frightened villagers of a hideous
+being with an army of alien henchmen are sending chills down the spines of
+top military brass.
+
+Unwilling to upset current political stability, an all-out assault on the
+region has been overruled, and instead, two of America's most cunning,
+courageous and ruthless soldiers from the Special Forces elite commando squad
+have been selected to seek out and destroy these alien intruders.
+
+Congratulations, pal, you're one of the chosen.  But before you take pride in
+being the best, be warned.
+
+You're about to come face to face against Red Falcon, the cruelest life-form
+in the galaxy.  He arrived on Earth thirty years ago (that's six months time
+in an alien's life) to establish a foothold from which he will attempt to
+conquer our world and then use it as a stepping stone toward his ultimate
+fiendish goal:  domination of the entire universe.
+
+Needless to say, playing hero won't be easy.  But you have no choice -- you
+must be a hero.  Because if you fail, life as we know it will cease to exist,
+and the vile Red Falcon will rule forever.
+
+If you succeed, well...it doesn't matter, because I doubt you will.
+
+HOW TO PLAY
+
+Your mission begins after you leap from an army assault copter into the dense
+jungle engulfing the banks of the mighty Amazon.  From this point forward you
+must battle past hordes of alien soldiers equipped with awesome extra-
+terrestrial firepower, relying mainly on your guerrilla warfare instincts to
+survive.
+
+Standing between you and destiny are eight defense zones, with the final zone
+evoking the ultimate challenge -- the destruction of Red Falcon.  To advance
+from one zone to another, you must wipe-out heavily defended detection sensors
+confronting you at the end of each zone.  These sensors are designed to warn
+Red Falcon of your approach so he can send forth stronger reinforcements.  To
+destroy Red Falcon in the final zone, you'll have to maneuver your way into
+his alien body, and then destroy him.
+
+Fortunately, for your sake, six different super weapons scattered throughout
+Red Falcon's defenses are at your disposal.  Of course attaining these weapons
+is a risky business.  And to do so, you must first blast away special flying
+capsules and pill-box sensors, and then capture the released Falcon symbols.
+(See Powering-Up for details).
+
+Contra can be played by either one or two players.  If two play, play as a
+team to survive.
+
+A single player can use either Control (1) or Control (2).  When two players
+act as commandos, both controls are used.
+
+Scores are displayed between defense zones and at the end of the game.  The
+game ends when you've lost the last of your 3 lives, or when you destroy the
+Red Falcon.  For every stage you successfully overcome, you receive one extra
+life.
+
+THE HEROES
+
+Lance - Code Name Scorpion:  Being an elite commando in the Special Forces
+takes a special breed of hero.  You need the cunning of a lion, the spirit of
+a Viking warrior, and the intelligence of a modern day field general.
+
+Bill - Code Name Mad Dog:  Only after these qualities are soaked into your
+soul can you stand a ghost of a chance saving humanity from the inhumane Red
+Falcon.
+
+CONTROLLING YOUR COMMANDO
+
+Select Button - Use to select either 1 player or 2 player mode.  When the game
+finishes, use to select CONTINUE or END.  Note, you can CONTINUE up to 3 times
+per mission.
+
+Start Button - Press to begin your mission.  Press again after you've selected
+CONTINUE or END when the game finishes.  Also press to PAUSE the action.
+
+Using the Control Pad in sync with the A-button and B-button:
+
+Up: You won't move.  Press with B-button to shoot upward.  Press with A-button
+to jump upward.
+
+Up/Right:  Move right.  Press with B-button to shoot upper right.  Press with
+A-button to jump right.
+
+Right:  Move right.  Press with B-button to shoot right.  Press with A-button
+to jump right.
+
+Down/Right:  Move right.  Press with B-button to shoot lower right.  Press
+with A-button to jump right.
+
+Down:  Laydown.  Press with B-button to shoot either left or right.  Press
+with A-button to climb down.
+
+Down/Left:  Move left.  Press with B-button to shoot lower left.  Press with
+A-button to jump left.
+
+Left:  Move left.  Press with B-button to shoot left.  Press with A-button to
+jump left.
+
+Up/Left:  Move left.  Press with B-button to shoot upper left.  Press with
+A-button to jump left.
+
+CONTROLLING YOUR COMMANDO IN 3-D
+
+Defense Zone 2 and Defense Zone 4 challenge you 3-dimensionally.  In these
+zones you'll find yourself deep within a Mayan temple converted into a
+commando death trap, complete with Red Falcon's Royal Guards and high voltage,
+mind-jolting energy fields.
+
+Control Pad - Use to move forward, to the left or to the right.  Press pad
+down to lay down.
+
+B-button - Press to fire.
+
+A-button - Press to jump.
+
+RED FALCON'S EIGHT LINES OF DEFENSE
+
+Jungle:  Fight through the heart of the Amazon, blasting past Red Falcon's
+first lines of defense, until you reach the entrance of the fortified Mayan
+temple.  Destroy the red detection sensor to advance into BASE 1.
+
+Base 1:  Weave through an underground maze, destroying sensors while avoiding
+attacks from the Royal Guard.  Remember -- Beware the Energy Fields.  And pray
+to make it past the evil core at the center of Base 1.
+
+Waterfall:  It's just a hop, skip and a jump upward until you reach Base 2.
+Naturally, aliens surround your every move, but you must reach the diamond
+shaped detection sensor and blow it up to inch closer toward Red Falcon.
+
+Base 2:  The sensors suddenly become more difficult to destroy, as do the
+Royal Guards.  Once you reach the core, you must demolish 4 moving heads when
+they are perfectly aligned.  Good luck!  You'll need it.
+
+Snow Field:  Red Falcon is beginning to worry about your progress and has
+turned rain forests into treacherous ice fields.  If you don't freeze to death
+or get blasted by an array of alien forces, you may survive.
+
+Energy Zone:  Now you're in a pre-fab world of hyper-space terror.
+Reinforcements pour in and all appears hopeless.  Of course if you believe in
+miracles maybe you'll make it.
+
+Hangar Zone:  Holy cow!  You've made it to Red Falcon's final line of defense
+before you reach the mighty one himself.  The aliens and the odds definitely
+don't favor you here.
+
+Alien's Lair:  Red Falcon, I'd like you to meet one hot shot commando.  Hot
+Shot commando, meet Red Falcon.  The unpleasantry is mutual, I'm sure, since
+you must blast alien larvae, alien guts, and finally the alien's heart to save
+the earth.
+
+POWERING-UP.  THE ART OF SURVIVAL.
+
+Destroy flying capsules and pill box sensors, and power-up Falcon Symbols will
+appear.  Capture these symbols and you'll obtain the firepower you'll
+ultimately need to survive.
+
+Flying Capsule (transcriber's note:  symbol looks like a football with a
+falcon in the center).
+
+Pill Box Sensor (transcriber's note:  symbol looks like an octagon with a
+diamond in the center).
+
+Machine Gun Falcon (falcon symbol with an "M" in the center).
+
+Laser Falcon (falcon with an "L" in the center).
+
+Fire Ball Falcon (falcon with an "F" in the center).
+
+Rapid Fire Falcon (falcon with an "R" in the center).
+
+Spread Gun Falcon (falcon with an "S" in the center).
+
+Force Field Falcon (falcon with a "B" in the center).
+
+Mass Destruction Falcon (glowing falcon symbol).
+
+TREAT YOUR KONAMI GAME CAREFULLY!!
+
