@@ -1,0 +1,51 @@
+name: Generate ROM list
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "roms/**"
+      - "generate-roms.js"
+      - ".github/workflows/generate-roms.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+
+  generate-rom-list:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate roms.json
+        run: node generate-roms.js
+
+      - name: Commit roms.json
+        run: |
+
+          git config user.name "github-actions[bot]"
+
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add roms.json
+
+          if git diff --cached --quiet; then
+
+            echo "No changes to roms.json."
+
+          else
+
+            git commit -m "Update ROM list"
+
+            git push
+
+          fi
