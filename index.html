@@ -1,0 +1,41 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Retro Web Emulator</title>
+<style>
+body{margin:0;background:#111;color:#eee;font-family:Arial}.app{max-width:1000px;margin:auto;padding:18px}
+.tabs,.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}button,input{padding:10px;border-radius:6px}
+button{background:#292929;color:white;border:1px solid #666}.active{outline:2px solid #aaa}
+input{background:#222;color:white;border:1px solid #555;flex:1;min-width:260px}
+.panel{background:#191919;border:1px solid #444;padding:14px;border-radius:8px}
+#status{color:#bbb;min-height:22px}.screen{background:#000;text-align:center;margin-top:12px}
+canvas{max-width:100%;image-rendering:pixelated}
+</style></head><body><div class="app">
+<h1>Retro Web Emulator</h1>
+<div class="tabs">
+<button data-system="snes">SNES / NES</button>
+<button data-system="genesis">Genesis / SMS / Game Gear</button>
+<button data-system="gba">GBA / GB / GBC</button>
+</div>
+<div class="panel"><div class="row">
+<input id="romUrl" placeholder="ROM URL, e.g. roms/super-metroid.sfc">
+<button id="load">Load ROM</button><button id="reset">Reset</button>
+</div><div id="status">Choose a system and enter a ROM URL.</div>
+<div class="screen"><canvas id="screen" width="640" height="480"></canvas></div>
+<p>Keyboard: arrows = D-pad · Enter = Start · Shift = Select.</p></div></div>
+<script>
+let system="snes";const status=document.getElementById("status"),url=document.getElementById("romUrl");
+document.querySelectorAll("[data-system]").forEach(b=>b.onclick=()=>{
+ document.querySelectorAll("[data-system]").forEach(x=>x.classList.remove("active"));
+ b.classList.add("active");system=b.dataset.system;status.textContent="Selected "+system.toUpperCase()+".";
+});
+document.querySelector("[data-system]").classList.add("active");
+document.getElementById("load").onclick=async()=>{
+ if(!url.value.trim()){status.textContent="Enter a ROM URL first.";return}
+ status.textContent="Loading ROM...";
+ try{const r=await fetch(url.value.trim(),{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);
+ const b=await r.arrayBuffer();window.loadedRom=new Uint8Array(b);
+ status.textContent="ROM loaded ("+(b.byteLength/1024).toFixed(1)+" KB). Emulator core integration is next.";
+ }catch(e){status.textContent="Could not load ROM: "+e.message}
+};
+document.getElementById("reset").onclick=()=>location.reload();
+</script></body></html>
