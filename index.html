@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 
 <html lang="en">
@@ -13,7 +14,6 @@ content="width=device-width, initial-scale=1.0"
 
 <title>Retro Web Emulator</title>
 
-<!-- Retro favicon -->
 <link
 rel="icon"
 type="image/svg+xml"
@@ -213,7 +213,7 @@ h1 {
 </button>
 
 <button data-system="psp">
-    PSP
+    PlayStation Portable
 </button>
 
 </div>
@@ -281,15 +281,8 @@ const DATA_PATH =
 const ROMS_PATH =
     "./roms/";
 
-/*
-GitHub Git Trees API
-
-Unlike /contents/roms, this does not have
-the 1,000-files-per-directory limitation.
-*/
-
-const GITHUB_TREE_API =
-    "https://api.github.com/repos/Kadaz/Retro-Web-Emulator/git/trees/main?recursive=1";
+const ROM_LIST_PATH =
+    "./roms.json";
 
 const GITHUB_RAW_PATH =
     "https://raw.githubusercontent.com/Kadaz/Retro-Web-Emulator/main/";
@@ -343,7 +336,7 @@ const SYSTEMS = {
 
         name: "Mega Drive / Genesis",
 
-        core: "segaMD",
+        core: "genesis_plus_gx",
 
         source: "project",
 
@@ -592,257 +585,6 @@ function isSupported(filename) {
 
 /*
 ============================================================
-ENCODE GITHUB PATH
-============================================================
-*/
-
-function encodeGitHubPath(path) {
-
-    return path
-        .split("/")
-        .map(
-            part =>
-                encodeURIComponent(part)
-        )
-        .join("/");
-
-}
-
-
-/*
-============================================================
-LOAD ROMS FROM GITHUB GIT TREE
-============================================================
-*/
-
-async function loadROMs() {
-
-    const system =
-        getSystem();
-
-
-    /*
-    --------------------------------------------------------
-    Systems using local PC files
-    --------------------------------------------------------
-    */
-
-    if (system.source === "pc") {
-
-        romSelect.classList.add(
-            "hidden"
-        );
-
-        pcFile.classList.remove(
-            "hidden"
-        );
-
-        localInfo.classList.remove(
-            "hidden"
-        );
-
-        pcFile.value =
-            "";
-
-        currentLocalFile =
-            null;
-
-        status.textContent =
-            system.name +
-            " — choose a game from your PC.";
-
-        return;
-
-    }
-
-
-    /*
-    --------------------------------------------------------
-    Systems using project ROMs
-    --------------------------------------------------------
-    */
-
-    romSelect.classList.remove(
-        "hidden"
-    );
-
-    pcFile.classList.add(
-        "hidden"
-    );
-
-    localInfo.classList.add(
-        "hidden"
-    );
-
-    status.textContent =
-        "Loading ROMs...";
-
-    romSelect.innerHTML =
-        '<option value="">Loading...</option>';
-
-
-    try {
-
-        /*
-        Get the complete repository tree.
-        This replaces the old /contents/roms API.
-        */
-
-        const response =
-            await fetch(
-                GITHUB_TREE_API +
-                "&t=" +
-                Date.now()
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "GitHub Tree API error: " +
-                response.status
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !data ||
-            !Array.isArray(data.tree)
-        ) {
-
-            throw new Error(
-                "Invalid GitHub Tree response"
-            );
-
-        }
-
-
-        /*
-        ----------------------------------------------------
-        Find files inside /roms
-        ----------------------------------------------------
-        */
-
-        const roms =
-            data.tree
-                .filter(
-                    file =>
-                        file.type === "blob" &&
-                        file.path.startsWith(
-                            "roms/"
-                        )
-                )
-                .filter(
-                    file =>
-                        isSupported(
-                            file.path
-                        )
-                )
-                .sort(
-                    (a, b) =>
-                        a.path.localeCompare(
-                            b.path
-                        )
-                );
-
-
-        /*
-        ----------------------------------------------------
-        Build ROM list
-        ----------------------------------------------------
-        */
-
-        romSelect.innerHTML =
-            "";
-
-
-        const empty =
-            document.createElement(
-                "option"
-            );
-
-
-        empty.value =
-            "";
-
-
-        empty.textContent =
-            "Select a game...";
-
-
-        romSelect.appendChild(
-            empty
-        );
-
-
-        for (
-            const rom of roms
-        ) {
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-
-            /*
-            Store the complete repository
-            path instead of only the filename.
-            This also allows subfolders inside /roms.
-            */
-
-            option.value =
-                rom.path;
-
-
-            option.textContent =
-                rom.path.substring(
-                    "roms/".length
-                );
-
-
-            romSelect.appendChild(
-                option
-            );
-
-        }
-
-
-        status.textContent =
-            roms.length +
-            " game(s) found for " +
-            system.name;
-
-
-    }
-    catch (error) {
-
-        console.error(
-            "ROM loading failed:",
-            error
-        );
-
-
-        romSelect.innerHTML =
-            '<option value="">Unable to load ROMs</option>';
-
-
-        status.textContent =
-            "Unable to load ROM list: " +
-            error.message;
-
-    }
-
-}
-
-
-/*
-============================================================
 STOP PREVIOUS EMULATOR
 ============================================================
 */
@@ -892,6 +634,233 @@ function stopPreviousEmulator() {
 
 /*
 ============================================================
+LOAD ROM LIST FROM roms.json
+============================================================
+*/
+
+async function loadROMs() {
+
+    const system =
+        getSystem();
+
+
+    /*
+    --------------------------------------------------------
+    PC SYSTEMS
+    --------------------------------------------------------
+    */
+
+    if (
+        system.source ===
+        "pc"
+    ) {
+
+        romSelect.classList.add(
+            "hidden"
+        );
+
+        pcFile.classList.remove(
+            "hidden"
+        );
+
+        localInfo.classList.remove(
+            "hidden"
+        );
+
+        pcFile.value =
+            "";
+
+        currentLocalFile =
+            null;
+
+        status.textContent =
+            system.name +
+            " — choose a game from your PC.";
+
+        return;
+
+    }
+
+
+    /*
+    --------------------------------------------------------
+    PROJECT ROM SYSTEMS
+    --------------------------------------------------------
+    */
+
+    romSelect.classList.remove(
+        "hidden"
+    );
+
+    pcFile.classList.add(
+        "hidden"
+    );
+
+    localInfo.classList.add(
+        "hidden"
+    );
+
+
+    status.textContent =
+        "Loading ROM list...";
+
+
+    romSelect.innerHTML =
+        '<option value="">Loading...</option>';
+
+
+    try {
+
+        const response =
+            await fetch(
+                ROM_LIST_PATH +
+                "?t=" +
+                Date.now()
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "roms.json error: " +
+                response.status
+            );
+
+        }
+
+
+        const files =
+            await response.json();
+
+
+        if (
+            !Array.isArray(files)
+        ) {
+
+            throw new Error(
+                "Invalid roms.json"
+            );
+
+        }
+
+
+        /*
+        ----------------------------------------------------
+        Filter ROMs for current system
+        ----------------------------------------------------
+        */
+
+        const roms =
+            files
+                .filter(
+                    file =>
+                        typeof file ===
+                        "string"
+                )
+                .filter(
+                    file =>
+                        file.startsWith(
+                            "roms/"
+                        )
+                )
+                .filter(
+                    file =>
+                        isSupported(
+                            file
+                        )
+                )
+                .sort(
+                    (a, b) =>
+                        a.localeCompare(b)
+                );
+
+
+        /*
+        ----------------------------------------------------
+        BUILD SELECT
+        ----------------------------------------------------
+        */
+
+        romSelect.innerHTML =
+            "";
+
+
+        const empty =
+            document.createElement(
+                "option"
+            );
+
+
+        empty.value =
+            "";
+
+
+        empty.textContent =
+            "Select a game...";
+
+
+        romSelect.appendChild(
+            empty
+        );
+
+
+        for (
+            const rom of roms
+        ) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                rom;
+
+
+            option.textContent =
+                rom.substring(
+                    "roms/".length
+                );
+
+
+            romSelect.appendChild(
+                option
+            );
+
+        }
+
+
+        status.textContent =
+            roms.length +
+            " game(s) found for " +
+            system.name;
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "ROM loading failed:",
+            error
+        );
+
+
+        romSelect.innerHTML =
+            '<option value="">Unable to load ROMs</option>';
+
+
+        status.textContent =
+            "Unable to load ROM list: " +
+            error.message;
+
+    }
+
+}
+
+
+/*
+============================================================
 START GAME
 ============================================================
 */
@@ -904,7 +873,7 @@ function startGame() {
 
     /*
     --------------------------------------------------------
-    Project ROM
+    PROJECT ROM
     --------------------------------------------------------
     */
 
@@ -939,22 +908,23 @@ function startGame() {
 
 
         /*
-        Use the actual repository path.
+        Use RAW GitHub URL.
 
-        Example:
-
-        roms/SNES/game.sfc
-
-        becomes:
-
-        ./roms/SNES/game.sfc
+        This is important because it avoids
+        relative URL problems with certain ROM formats.
         */
 
         window.EJS_gameUrl =
             GITHUB_RAW_PATH +
-            encodeGitHubPath(
-                filepath
-            );
+            filepath
+                .split("/")
+                .map(
+                    part =>
+                        encodeURIComponent(
+                            part
+                        )
+                )
+                .join("/");
 
     }
 
@@ -985,7 +955,7 @@ function startGame() {
 
 
         /*
-        EmulatorJS accepts the selected
+        EmulatorJS receives the selected
         File object directly.
         */
 
@@ -997,7 +967,7 @@ function startGame() {
 
     /*
     --------------------------------------------------------
-    EmulatorJS configuration
+    EMULATORJS CONFIGURATION
     --------------------------------------------------------
     */
 
@@ -1022,7 +992,7 @@ function startGame() {
 
 
     /*
-    PSP requires threads.
+    PSP
     */
 
     if (system.threads) {
@@ -1041,7 +1011,7 @@ function startGame() {
 
     /*
     --------------------------------------------------------
-    STATUS
+    LOAD EMULATORJS
     --------------------------------------------------------
     */
 
@@ -1050,12 +1020,6 @@ function startGame() {
         system.name +
         " core...";
 
-
-    /*
-    --------------------------------------------------------
-    LOAD OFFICIAL STABLE LOADER
-    --------------------------------------------------------
-    */
 
     const loader =
         document.createElement(
@@ -1113,7 +1077,9 @@ pcFile.addEventListener(
     "change",
     function() {
 
-        if (!pcFile.files.length) {
+        if (
+            !pcFile.files.length
+        ) {
 
             currentLocalFile =
                 null;
@@ -1307,3 +1273,4 @@ loadROMs();
 </body>
 
 </html>
+```
