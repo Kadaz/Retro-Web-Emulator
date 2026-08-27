@@ -1,29 +1,39 @@
 <!DOCTYPE html>
 
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Retro Web Emulator</title>
 
 <style>
+
+html,
 body {
     margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
     background: #111;
     color: white;
     font-family: Arial, sans-serif;
 }
 
-#game {
-    width: 100%;
-    min-height: 600px;
-    background: #000;
-}
-
 #status {
     padding: 15px;
     text-align: center;
+    background: #181818;
 }
+
+#game {
+    width: 100%;
+    height: calc(100vh - 50px);
+    min-height: 500px;
+    background: #000;
+}
+
 </style>
 
 </head>
@@ -31,19 +41,44 @@ body {
 <body>
 
 <div id="status">
-    Loading Game Boy Color emulator...
+    Loading SNES emulator...
 </div>
 
 <div id="game"></div>
 
 <script>
-EJS_player = "#game";
-EJS_core = "gbc";
-EJS_gameUrl = "./roms/super-metroid.gbc";
-EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+
+/*
+ * EmulatorJS configuration
+ *
+ * super-metroid.sfc is a SNES ROM.
+ */
+
+var EJS_player = "#game";
+
+var EJS_core = "snes9x";
+
+var EJS_gameUrl = "./roms/super-metroid.sfc";
+
+var EJS_pathtodata =
+    "https://cdn.emulatorjs.org/stable/data/";
+
 </script>
 
-<script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+<script
+    src="https://cdn.emulatorjs.org/stable/data/loader.js">
+</script>
+
+<script>
+
+window.addEventListener("load", function () {
+
+    document.getElementById("status").textContent =
+        "SNES emulator loaded.";
+
+});
+
+</script>
 
 </body>
 </html>
