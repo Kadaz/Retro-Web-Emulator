@@ -5,8 +5,10 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>Retro Web Emulator</title>
 
@@ -135,8 +137,6 @@ button:hover {
 
 /* =========================================================
    EMULATOR
-
-   FULL WIDTH — IMPORTANT FOR EMULATORJS CONTROLS
    ========================================================= */
 
 .screen {
@@ -167,7 +167,7 @@ button:hover {
 
 
 /* =========================================================
-   INFO
+   INFORMATION
    ========================================================= */
 
 .info {
@@ -221,11 +221,14 @@ button:hover {
 
 <div class="app">
 
-<h1>Retro Web Emulator</h1>
+
+<h1>
+    Retro Web Emulator
+</h1>
 
 
 <!-- =====================================================
-     SYSTEMS
+     SYSTEM SELECTION
      ===================================================== -->
 
 <div class="tabs">
@@ -265,12 +268,12 @@ button:hover {
 </div>
 
 
+<!-- =====================================================
+     MAIN PANEL
+     ===================================================== -->
+
 <div class="panel">
 
-
-<!-- =====================================================
-     ROM LIST
-     ===================================================== -->
 
 <div class="row">
 
@@ -294,7 +297,9 @@ button:hover {
 
 
 <div id="status">
-    Scanning GitHub ROM folder...
+
+Scanning GitHub ROM folder...
+
 </div>
 
 
@@ -318,6 +323,7 @@ ROMs are automatically detected from the
 
 
 </div>
+
 
 </div>
 
@@ -364,16 +370,18 @@ const gameContainer =
 
 
 /* ========================================================
-   SYSTEMS
+   SYSTEM INFORMATION
    ======================================================== */
 
 const systems = {
 
     snes: {
 
-        name: "SNES",
+        name:
+            "Super Nintendo / SNES",
 
-        core: "snes",
+        core:
+            "snes",
 
         extensions: [
             ".sfc",
@@ -387,9 +395,11 @@ const systems = {
 
     nes: {
 
-        name: "NES",
+        name:
+            "Nintendo Entertainment System / NES",
 
-        core: "nes",
+        core:
+            "nes",
 
         extensions: [
             ".nes",
@@ -401,9 +411,11 @@ const systems = {
 
     segaMS: {
 
-        name: "Master System",
+        name:
+            "Sega Master System",
 
-        core: "segaMS",
+        core:
+            "segaMS",
 
         extensions: [
             ".sms"
@@ -414,9 +426,11 @@ const systems = {
 
     segaMD: {
 
-        name: "Mega Drive / Genesis",
+        name:
+            "Sega Mega Drive / Genesis",
 
-        core: "segaMD",
+        core:
+            "segaMD",
 
         extensions: [
             ".md",
@@ -430,9 +444,11 @@ const systems = {
 
     segaGG: {
 
-        name: "Game Gear",
+        name:
+            "Sega Game Gear",
 
-        core: "segaGG",
+        core:
+            "segaGG",
 
         extensions: [
             ".gg"
@@ -441,11 +457,20 @@ const systems = {
     },
 
 
+    /* =====================================================
+       GAME BOY
+
+       IMPORTANT:
+       Game Boy and Game Boy Color both use Gambatte.
+       ===================================================== */
+
     gb: {
 
-        name: "Game Boy",
+        name:
+            "Nintendo Game Boy",
 
-        core: "gb",
+        core:
+            "gambatte",
 
         extensions: [
             ".gb"
@@ -454,11 +479,20 @@ const systems = {
     },
 
 
+    /* =====================================================
+       GAME BOY COLOR
+
+       FIX:
+       Use gambatte instead of gbc.
+       ===================================================== */
+
     gbc: {
 
-        name: "Game Boy Color",
+        name:
+            "Nintendo Game Boy Color",
 
-        core: "gbc",
+        core:
+            "gambatte",
 
         extensions: [
             ".gbc"
@@ -469,9 +503,11 @@ const systems = {
 
     gba: {
 
-        name: "Game Boy Advance",
+        name:
+            "Nintendo Game Boy Advance",
 
-        core: "gba",
+        core:
+            "gba",
 
         extensions: [
             ".gba"
@@ -483,7 +519,7 @@ const systems = {
 
 
 /* ========================================================
-   CHECK EXTENSION
+   CHECK ROM EXTENSION
    ======================================================== */
 
 function isSystemRom(
@@ -491,7 +527,7 @@ function isSystemRom(
     systemId
 ) {
 
-    const name =
+    const lowerName =
         filename.toLowerCase();
 
     return systems[
@@ -499,7 +535,7 @@ function isSystemRom(
     ].extensions.some(
         function(extension) {
 
-            return name.endsWith(
+            return lowerName.endsWith(
                 extension
             );
 
@@ -510,7 +546,7 @@ function isSystemRom(
 
 
 /* ========================================================
-   GITHUB API ROM SCANNER
+   SCAN GITHUB ROM FOLDER
    ======================================================== */
 
 async function scanRoms() {
@@ -563,17 +599,14 @@ async function scanRoms() {
         if (!Array.isArray(files)) {
 
             throw new Error(
-                "The GitHub API did not return a file list."
+                "GitHub did not return a file list."
             );
 
         }
 
 
-        /*
-        ================================================
-        Create empty system lists
-        ================================================
-        */
+        romDatabase = {};
+
 
         Object.keys(
             systems
@@ -587,12 +620,6 @@ async function scanRoms() {
             }
         );
 
-
-        /*
-        ================================================
-        Process files
-        ================================================
-        */
 
         files.forEach(
             function(file) {
@@ -626,15 +653,6 @@ async function scanRoms() {
                                 name:
                                     file.name,
 
-                                /*
-                                Use the GitHub Pages
-                                relative URL.
-
-                                This is important because
-                                the repository is a GitHub
-                                Pages website.
-                                */
-
                                 url:
                                     ROM_FOLDER +
                                     "/" +
@@ -652,12 +670,6 @@ async function scanRoms() {
             }
         );
 
-
-        /*
-        ================================================
-        Sort
-        ================================================
-        */
 
         Object.keys(
             romDatabase
@@ -684,12 +696,6 @@ async function scanRoms() {
             }
         );
 
-
-        /*
-        ================================================
-        Show selected system
-        ================================================
-        */
 
         filterRoms();
 
@@ -724,16 +730,20 @@ async function scanRoms() {
         romSelect.innerHTML =
             "";
 
+
         const option =
             document.createElement(
                 "option"
             );
 
+
         option.value =
             "";
 
+
         option.textContent =
             "Could not scan ROMs";
+
 
         romSelect.appendChild(
             option
@@ -752,7 +762,7 @@ async function scanRoms() {
 
 
 /* ========================================================
-   FILTER ROMS
+   FILTER ROM LIST
    ======================================================== */
 
 function filterRoms() {
@@ -847,12 +857,6 @@ function startEmulator(
         "...";
 
 
-    /*
-    ================================================
-    EmulatorJS settings
-    ================================================
-    */
-
     window.EJS_player =
         "#game";
 
@@ -880,12 +884,6 @@ function startEmulator(
         "https://cdn.emulatorjs.org/stable/data/";
 
 
-    /*
-    ================================================
-    Remove old emulator
-    ================================================
-    */
-
     gameContainer.innerHTML =
         "";
 
@@ -902,12 +900,6 @@ function startEmulator(
 
     }
 
-
-    /*
-    ================================================
-    Load EmulatorJS
-    ================================================
-    */
 
     const script =
         document.createElement(
@@ -951,7 +943,7 @@ function startEmulator(
 
 
 /* ========================================================
-   LOAD BUTTON
+   LOAD ROM
    ======================================================== */
 
 document
@@ -983,7 +975,7 @@ document
 
 
 /* ========================================================
-   DOUBLE CLICK ROM
+   DOUBLE CLICK
    ======================================================== */
 
 romSelect.addEventListener(
@@ -995,7 +987,9 @@ romSelect.addEventListener(
 
 
         if (!rom) {
+
             return;
+
         }
 
 
@@ -1157,7 +1151,7 @@ document
 
 
 /* ========================================================
-   START AUTOMATIC SCAN
+   START
    ======================================================== */
 
 scanRoms();
