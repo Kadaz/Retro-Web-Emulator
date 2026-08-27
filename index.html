@@ -83,7 +83,6 @@
         }
 
         input,
-        select,
         button {
             padding: 10px;
             border-radius: 6px;
@@ -96,12 +95,6 @@
             border: 1px solid #555;
             flex: 1;
             min-width: 260px;
-        }
-
-        select {
-            background: #222;
-            color: white;
-            border: 1px solid #555;
         }
 
         button {
@@ -124,8 +117,8 @@
         .screen {
             background: #000;
             margin-top: 12px;
-            min-height: 480px;
             width: 100%;
+            min-height: 480px;
             position: relative;
         }
 
@@ -138,10 +131,6 @@
             color: #999;
             font-size: 13px;
             line-height: 1.5;
-        }
-
-        .hidden {
-            display: none;
         }
 
     </style>
@@ -194,7 +183,7 @@
     </div>
 
 
-    <!-- MAIN PANEL -->
+    <!-- EMULATOR PANEL -->
 
     <div class="panel">
 
@@ -204,6 +193,7 @@
                 id="romUrl"
                 type="text"
                 placeholder="ROM path, e.g. roms/super-metroid.sfc"
+                autocomplete="off"
             >
 
             <button id="load">
@@ -243,129 +233,175 @@
 
 <script>
 
-    /*
-    ============================================================
-    RETRO WEB EMULATOR
-    ============================================================
-    */
+
+/*
+============================================================
+RETRO WEB EMULATOR
+============================================================
+*/
 
 
-    let selectedSystem = "snes";
+let selectedSystem = "snes";
 
-    let emulatorLoaded = false;
-
-
-    const status =
-        document.getElementById("status");
+let emulatorStarted = false;
 
 
-    const romUrl =
-        document.getElementById("romUrl");
+/*
+============================================================
+ELEMENTS
+============================================================
+*/
+
+const status =
+    document.getElementById("status");
+
+const romUrl =
+    document.getElementById("romUrl");
+
+const gameContainer =
+    document.getElementById("game");
 
 
-    const gameContainer =
-        document.getElementById("game");
+/*
+============================================================
+SYSTEM INFORMATION
+============================================================
+*/
+
+const systems = {
+
+    snes: {
+
+        name: "Super Nintendo / SNES",
+
+        core: "snes",
+
+        extensions: [
+            ".sfc",
+            ".smc",
+            ".fig",
+            ".gd3",
+            ".gd7",
+            ".dx2",
+            ".bsx",
+            ".swc"
+        ]
+
+    },
 
 
-    /*
-    ============================================================
-    SYSTEM INFORMATION
-    ============================================================
-    */
+    nes: {
 
-    const systems = {
+        name: "Nintendo Entertainment System / NES",
 
-        snes: {
-            name: "Super Nintendo / SNES",
-            core: "snes",
-            extensions: [
-                ".sfc",
-                ".smc",
-                ".fig",
-                ".gd3",
-                ".gd7",
-                ".dx2",
-                ".bsx",
-                ".swc"
-            ]
-        },
+        core: "nes",
 
-        nes: {
-            name: "Nintendo Entertainment System / NES",
-            core: "nes",
-            extensions: [
-                ".nes",
-                ".fds",
-                ".unif",
-                ".unf"
-            ]
-        },
+        extensions: [
+            ".nes",
+            ".fds",
+            ".unif",
+            ".unf"
+        ]
 
-        segaMS: {
-            name: "Sega Master System",
-            core: "segaMS",
-            extensions: [
-                ".sms"
-            ]
-        },
-
-        segaMD: {
-            name: "Sega Mega Drive / Genesis",
-            core: "segaMD",
-            extensions: [
-                ".md",
-                ".gen",
-                ".smd",
-                ".bin"
-            ]
-        },
-
-        segaGG: {
-            name: "Sega Game Gear",
-            core: "segaGG",
-            extensions: [
-                ".gg"
-            ]
-        },
-
-        gb: {
-            name: "Nintendo Game Boy",
-            core: "gb",
-            extensions: [
-                ".gb"
-            ]
-        },
-
-        gbc: {
-            name: "Nintendo Game Boy Color",
-            core: "gbc",
-            extensions: [
-                ".gbc"
-            ]
-        },
-
-        gba: {
-            name: "Nintendo Game Boy Advance",
-            core: "gba",
-            extensions: [
-                ".gba"
-            ]
-        }
-
-    };
+    },
 
 
-    /*
-    ============================================================
-    SYSTEM BUTTONS
-    ============================================================
-    */
+    segaMS: {
 
-    document
-        .querySelectorAll("[data-system]")
-        .forEach(function(button) {
+        name: "Sega Master System",
 
-            button.addEventListener("click", function() {
+        core: "segaMS",
+
+        extensions: [
+            ".sms"
+        ]
+
+    },
+
+
+    segaMD: {
+
+        name: "Sega Mega Drive / Genesis",
+
+        core: "segaMD",
+
+        extensions: [
+            ".md",
+            ".gen",
+            ".smd",
+            ".bin"
+        ]
+
+    },
+
+
+    segaGG: {
+
+        name: "Sega Game Gear",
+
+        core: "segaGG",
+
+        extensions: [
+            ".gg"
+        ]
+
+    },
+
+
+    gb: {
+
+        name: "Nintendo Game Boy",
+
+        core: "gb",
+
+        extensions: [
+            ".gb"
+        ]
+
+    },
+
+
+    gbc: {
+
+        name: "Nintendo Game Boy Color",
+
+        core: "gbc",
+
+        extensions: [
+            ".gbc"
+        ]
+
+    },
+
+
+    gba: {
+
+        name: "Nintendo Game Boy Advance",
+
+        core: "gba",
+
+        extensions: [
+            ".gba"
+        ]
+
+    }
+
+};
+
+
+/*
+============================================================
+SYSTEM BUTTONS
+============================================================
+*/
+
+document
+    .querySelectorAll("[data-system]")
+    .forEach(function(button) {
+
+        button.addEventListener(
+            "click",
+            function() {
 
                 document
                     .querySelectorAll("[data-system]")
@@ -394,189 +430,198 @@
 
 
                 /*
-                Clear example URL.
+                Clear ROM path when changing system.
                 */
 
                 romUrl.value = "";
 
-            });
+            }
+        );
 
-        });
-
-
-    /*
-    ============================================================
-    DEFAULT SYSTEM
-    ============================================================
-    */
-
-    document
-        .querySelector('[data-system="snes"]')
-        .classList.add("active");
+    });
 
 
-    /*
-    ============================================================
-    ROM PATH
-    ============================================================
-    */
+/*
+============================================================
+DEFAULT SYSTEM
+============================================================
+*/
 
-    function getRomUrl() {
+document
+    .querySelector('[data-system="snes"]')
+    .classList.add("active");
 
-        let value =
-            romUrl.value.trim();
+
+/*
+============================================================
+GET ABSOLUTE ROM URL
+============================================================
+*/
+
+function getRomUrl() {
+
+    const value =
+        romUrl.value.trim();
 
 
-        if (!value) {
+    if (!value) {
 
-            return "";
+        return "";
+
+    }
+
+
+    return new URL(
+        value,
+        window.location.href
+    ).href;
+
+}
+
+
+/*
+============================================================
+CHECK ROM EXTENSION
+============================================================
+*/
+
+function checkExtension(url) {
+
+    const system =
+        systems[selectedSystem];
+
+
+    const cleanUrl =
+        url
+            .split("?")[0]
+            .split("#")[0]
+            .toLowerCase();
+
+
+    return system.extensions.some(
+        function(extension) {
+
+            return cleanUrl.endsWith(extension);
 
         }
+    );
+
+}
 
 
-        return new URL(
-            value,
-            window.location.href
-        ).href;
+/*
+============================================================
+START EMULATORJS
+============================================================
+*/
 
-    }
+function loadEmulator(romUrlValue) {
 
-
-    /*
-    ============================================================
-    ROM EXTENSION CHECK
-    ============================================================
-    */
-
-    function checkExtension(url) {
-
-        const system =
-            systems[selectedSystem];
+    const system =
+        systems[selectedSystem];
 
 
-        const cleanUrl =
-            url.split("?")[0]
-               .split("#")[0]
-               .toLowerCase();
-
-
-        const valid =
-            system.extensions.some(function(extension) {
-
-                return cleanUrl.endsWith(extension);
-
-            });
-
-
-        return valid;
-
-    }
+    status.textContent =
+        "Starting " +
+        system.name +
+        " emulator...";
 
 
     /*
-    ============================================================
-    LOAD EMULATORJS
-    ============================================================
+    --------------------------------------------------------
+    EmulatorJS configuration
+    --------------------------------------------------------
     */
 
-    function loadEmulator(romUrlValue) {
-
-        const system =
-            systems[selectedSystem];
+    window.EJS_player =
+        "#game";
 
 
-        status.textContent =
-            "Starting " +
-            system.name +
-            " emulator...";
+    window.EJS_core =
+        system.core;
 
 
-        /*
-        IMPORTANT:
-        EmulatorJS configuration must exist BEFORE
-        loader.js is loaded.
-        */
-
-        window.EJS_player =
-            "#game";
+    window.EJS_gameUrl =
+        romUrlValue;
 
 
-        window.EJS_core =
-            system.core;
+    window.EJS_mouse =
+        false;
 
 
-        window.EJS_gameUrl =
-            romUrlValue;
+    window.EJS_multitap =
+        false;
 
 
-        window.EJS_pathtodata =
-            "https://cdn.emulatorjs.org/stable/data/";
-
-
-        window.EJS_mouse =
-            false;
-
-
-        window.EJS_multitap =
-            false;
-
-
-        /*
-        Remove previous emulator.
-        */
-
-        gameContainer.innerHTML = "";
-
-
-        /*
-        Load EmulatorJS loader.
-        */
-
-        const script =
-            document.createElement("script");
-
-
-        script.src =
-            "https://cdn.emulatorjs.org/stable/data/loader.js";
-
-
-        script.onload =
-            function() {
-
-                emulatorLoaded = true;
-
-
-                status.textContent =
-                    system.name +
-                    " emulator started.";
-
-            };
-
-
-        script.onerror =
-            function() {
-
-                status.textContent =
-                    "Could not load EmulatorJS.";
-
-            };
-
-
-        document.body.appendChild(script);
-
-    }
+    window.EJS_pathtodata =
+        "https://cdn.emulatorjs.org/stable/data/";
 
 
     /*
-    ============================================================
-    LOAD ROM
-    ============================================================
+    --------------------------------------------------------
+    Clear previous emulator
+    --------------------------------------------------------
     */
 
-    document
-        .getElementById("load")
-        .addEventListener("click", async function() {
+    gameContainer.innerHTML = "";
 
+
+    /*
+    --------------------------------------------------------
+    Load EmulatorJS loader
+    --------------------------------------------------------
+    */
+
+    const script =
+        document.createElement("script");
+
+
+    script.id =
+        "emulatorjs-loader";
+
+
+    script.src =
+        "https://cdn.emulatorjs.org/stable/data/loader.js";
+
+
+    script.onload =
+        function() {
+
+            emulatorStarted = true;
+
+
+            status.textContent =
+                system.name +
+                " emulator started.";
+
+        };
+
+
+    script.onerror =
+        function() {
+
+            status.textContent =
+                "Could not load EmulatorJS.";
+
+        };
+
+
+    document.body.appendChild(script);
+
+}
+
+
+/*
+============================================================
+LOAD ROM
+============================================================
+*/
+
+document
+    .getElementById("load")
+    .addEventListener(
+        "click",
+        async function() {
 
             const value =
                 romUrl.value.trim();
@@ -596,18 +641,20 @@
                 getRomUrl();
 
 
+            const system =
+                systems[selectedSystem];
+
+
             /*
-            Check extension.
+            ------------------------------------------------
+            Extension check
+            ------------------------------------------------
             */
 
             if (!checkExtension(absoluteUrl)) {
 
-                const system =
-                    systems[selectedSystem];
-
-
                 status.textContent =
-                    "Warning: this ROM extension does not normally " +
+                    "Warning: ROM extension does not normally " +
                     "belong to " +
                     system.name +
                     ". Trying anyway...";
@@ -622,7 +669,9 @@
 
 
             /*
-            Check that ROM exists.
+            ------------------------------------------------
+            First try HEAD
+            ------------------------------------------------
             */
 
             try {
@@ -651,20 +700,19 @@
                     "ROM found. Starting emulator...";
 
 
-                /*
-                Start EmulatorJS.
-                */
-
                 loadEmulator(
                     absoluteUrl
                 );
 
+
             }
-            catch (error) {
+            catch (headError) {
 
                 /*
-                Some servers do not support HEAD.
-                Try GET instead.
+                --------------------------------------------
+                Some local/web servers don't support HEAD.
+                Try GET.
+                --------------------------------------------
                 */
 
                 try {
@@ -697,57 +745,189 @@
                         absoluteUrl
                     );
 
+
                 }
-                catch (secondError) {
+                catch (getError) {
 
                     status.innerHTML =
-                        "Could not load ROM.<br>" +
+                        "Could not load ROM.<br><br>" +
                         "<small>" +
-                        secondError.message +
+                        getError.message +
                         "</small>";
 
                 }
 
             }
 
-        });
+        }
+    );
 
 
-    /*
-    ============================================================
-    RESET
-    ============================================================
-    */
+/*
+============================================================
+RESET
+============================================================
+*/
 
-    document
-        .getElementById("reset")
-        .addEventListener("click", function() {
+document
+    .getElementById("reset")
+    .addEventListener(
+        "click",
+        function() {
 
             location.reload();
 
-        });
-
-
-    /*
-    ============================================================
-    ENTER KEY
-    ============================================================
-    */
-
-    romUrl.addEventListener(
-        "keydown",
-        function(event) {
-
-            if (event.key === "Enter") {
-
-                document
-                    .getElementById("load")
-                    .click();
-
-            }
-
         }
     );
+
+
+/*
+============================================================
+ENTER KEY IN ROM INPUT
+============================================================
+*/
+
+romUrl.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            document
+                .getElementById("load")
+                .click();
+
+        }
+
+    }
+);
+
+
+/*
+============================================================
+KEYBOARD FIX
+============================================================
+
+IMPORTANT:
+
+We only block browser handling for game keys.
+
+We DO NOT modify EmulatorJS key mapping.
+
+This allows EmulatorJS to receive the original
+keydown / keyup events normally.
+
+============================================================
+*/
+
+
+const emulatorKeys = new Set([
+
+    "ArrowUp",
+    "ArrowDown",
+    "ArrowLeft",
+    "ArrowRight",
+
+    "Enter",
+    "Shift",
+
+    "Control",
+    "Alt",
+
+    "z",
+    "x",
+    "a",
+    "s",
+
+    "Z",
+    "X",
+    "A",
+    "S",
+
+    " "
+
+]);
+
+
+/*
+------------------------------------------------------------
+KEY DOWN
+------------------------------------------------------------
+*/
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        /*
+        Never interfere with the ROM input box.
+        */
+
+        if (
+            document.activeElement === romUrl
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            emulatorKeys.has(event.key)
+        ) {
+
+            /*
+            Stop browser scrolling and UI actions.
+
+            EmulatorJS still receives the event because
+            we are NOT stopping propagation.
+            */
+
+            event.preventDefault();
+
+        }
+
+    },
+    false
+);
+
+
+/*
+------------------------------------------------------------
+KEY UP
+------------------------------------------------------------
+*/
+
+document.addEventListener(
+    "keyup",
+    function(event) {
+
+        /*
+        Never interfere with the ROM input box.
+        */
+
+        if (
+            document.activeElement === romUrl
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            emulatorKeys.has(event.key)
+        ) {
+
+            event.preventDefault();
+
+        }
+
+    },
+    false
+);
 
 
 </script>
