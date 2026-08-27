@@ -138,13 +138,6 @@
 
         /* ==================================================
            EMULATOR AREA
-           
-           Important:
-           Do NOT force a fixed 600px height.
-           
-           EmulatorJS has its own controls at the bottom.
-           We give it enough room so volume and other controls
-           are not hidden.
            ================================================== */
 
         .screen {
@@ -152,14 +145,32 @@
             margin-top: 12px;
             width: 100%;
             position: relative;
+
+            /*
+            IMPORTANT:
+            Leave room for EmulatorJS controls.
+            */
+
+            padding-bottom: 90px;
+
             overflow: visible;
         }
 
         #game {
             width: 100%;
-            height: calc(100vh - 250px);
+
+            /*
+            Slightly smaller than before so the
+            bottom EmulatorJS controls have room.
+            */
+
+            height: calc(100vh - 300px);
+
             min-height: 480px;
+
             position: relative;
+
+            overflow: visible;
         }
 
 
@@ -198,8 +209,12 @@
             }
 
             #game {
-                height: calc(100vh - 260px);
+                height: calc(100vh - 300px);
                 min-height: 400px;
+            }
+
+            .screen {
+                padding-bottom: 80px;
             }
 
         }
@@ -494,10 +509,6 @@ document
             "click",
             function() {
 
-                /*
-                Remove active state
-                */
-
                 document
                     .querySelectorAll("[data-system]")
                     .forEach(function(btn) {
@@ -506,10 +517,6 @@ document
 
                     });
 
-
-                /*
-                Set active system
-                */
 
                 button.classList.add("active");
 
@@ -527,10 +534,6 @@ document
                     system.name +
                     ".";
 
-
-                /*
-                Clear ROM input
-                */
 
                 romUrl.value = "";
 
@@ -658,7 +661,7 @@ function loadEmulator(romUrlValue) {
 
     /*
     ========================================================
-    Remove old emulator
+    Clear emulator container
     ========================================================
     */
 
@@ -666,7 +669,9 @@ function loadEmulator(romUrlValue) {
 
 
     /*
-    Remove old loader if it exists
+    ========================================================
+    Remove previous loader
+    ========================================================
     */
 
     const oldLoader =
@@ -787,7 +792,7 @@ document
 
             /*
             =================================================
-            Try HEAD request
+            Try HEAD
             =================================================
             */
 
@@ -828,8 +833,7 @@ document
 
                 /*
                 =================================================
-                Some servers don't support HEAD.
-                Try GET.
+                Try GET if HEAD is not supported.
                 =================================================
                 */
 
@@ -928,9 +932,11 @@ romUrl.addEventListener(
 KEYBOARD FIX
 ============================================================
 
-We prevent the browser from using the game keys for its
-own actions, while allowing EmulatorJS to receive the
-original keyboard events.
+The browser must not scroll the page when the arrow keys
+are used.
+
+We prevent the browser's default action but do NOT stop
+event propagation, so EmulatorJS can still receive the keys.
 
 ============================================================
 */
@@ -974,7 +980,7 @@ document.addEventListener(
     function(event) {
 
         /*
-        Don't interfere while typing ROM path.
+        Do not interfere while typing the ROM path.
         */
 
         if (
@@ -989,14 +995,6 @@ document.addEventListener(
         if (
             emulatorKeys.has(event.key)
         ) {
-
-            /*
-            Prevent browser scrolling / UI actions.
-
-            IMPORTANT:
-            We do NOT stop propagation.
-            EmulatorJS can still receive the event.
-            */
 
             event.preventDefault();
 
@@ -1018,7 +1016,7 @@ document.addEventListener(
     function(event) {
 
         /*
-        Don't interfere while typing ROM path.
+        Do not interfere while typing the ROM path.
         */
 
         if (
