@@ -8,16 +8,16 @@
 <meta charset="UTF-8">
 
 <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
+name="viewport"
+content="width=device-width, initial-scale=1.0"
 >
 
 <title>Retro Web Emulator</title>
 
 <link
-    rel="icon"
-    type="image/svg+xml"
-    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23191919'/%3E%3Crect x='10' y='18' width='44' height='28' rx='7' fill='%23555'/%3E%3Crect x='17' y='25' width='14' height='4' fill='white'/%3E%3Crect x='22' y='20' width='4' height='14' fill='white'/%3E%3Ccircle cx='44' cy='27' r='3' fill='%23ff5555'/%3E%3Ccircle cx='50' cy='33' r='3' fill='%2355aaff'/%3E%3C/svg%3E"
+rel="icon"
+type="image/svg+xml"
+href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23191919'/%3E%3Crect x='10' y='18' width='44' height='28' rx='7' fill='%23555'/%3E%3Crect x='17' y='25' width='14' height='4' fill='white'/%3E%3Crect x='22' y='20' width='4' height='14' fill='white'/%3E%3Ccircle cx='44' cy='27' r='3' fill='%23ff5555'/%3E%3Ccircle cx='50' cy='33' r='3' fill='%2355aaff'/%3E%3C/svg%3E"
 >
 
 <style>
@@ -278,6 +278,9 @@ CONFIGURATION
 const DATA_PATH =
     "https://cdn.emulatorjs.org/stable/data/";
 
+const ROMS_PATH =
+    "./roms/";
+
 const ROM_LIST_PATH =
     "./roms.json";
 
@@ -294,21 +297,30 @@ SYSTEMS
 const SYSTEMS = {
 
     nes: {
+
         name: "NES",
+
         core: "nestopia",
+
         source: "project",
+
         extensions: [
             "nes",
             "fds",
             "unif",
             "unf"
         ]
+
     },
 
     snes: {
+
         name: "SNES",
+
         core: "snes9x",
+
         source: "project",
+
         extensions: [
             "sfc",
             "smc",
@@ -317,91 +329,136 @@ const SYSTEMS = {
             "bs",
             "st"
         ]
+
     },
 
     genesis: {
+
         name: "Mega Drive / Genesis",
+
         core: "genesis_plus_gx",
+
         source: "project",
+
         extensions: [
             "md",
             "gen",
             "smd",
             "bin"
         ]
+
     },
 
     sms: {
+
         name: "Master System",
+
         core: "genesis_plus_gx",
+
         source: "project",
+
         extensions: [
             "sms"
         ]
+
     },
 
     gg: {
+
         name: "Game Gear",
+
         core: "genesis_plus_gx",
+
         source: "project",
+
         extensions: [
             "gg"
         ]
+
     },
 
     gb: {
+
         name: "Game Boy",
+
         core: "gambatte",
+
         source: "project",
+
         extensions: [
             "gb",
             "dmg"
         ]
+
     },
 
     gbc: {
+
         name: "Game Boy Color",
+
         core: "gambatte",
+
         source: "project",
+
         extensions: [
             "gbc"
         ]
+
     },
 
     gba: {
+
         name: "Game Boy Advance",
+
         core: "mgba",
+
         source: "project",
+
         extensions: [
             "gba"
         ]
+
     },
 
     atari2600: {
+
         name: "Atari 2600",
+
         core: "atari2600",
+
         source: "project",
+
         extensions: [
             "a26",
             "bin"
         ]
+
     },
 
     n64: {
+
         name: "Nintendo 64",
+
         core: "n64",
+
         source: "pc",
+
         extensions: [
             "z64",
             "n64",
             "v64"
         ]
+
     },
 
     psx: {
+
         name: "PlayStation 1",
+
         core: "psx",
+
         source: "pc",
+
         extensions: [
             "cue",
             "bin",
@@ -414,27 +471,39 @@ const SYSTEMS = {
             "m3u",
             "ccd"
         ]
+
     },
 
     nds: {
+
         name: "Nintendo DS",
+
         core: "nds",
+
         source: "pc",
+
         extensions: [
             "nds"
         ]
+
     },
 
     psp: {
+
         name: "PlayStation Portable",
+
         core: "psp",
+
         source: "pc",
+
         extensions: [
             "iso",
             "cso",
             "pbp"
         ],
+
         threads: true
+
     }
 
 };
@@ -442,7 +511,7 @@ const SYSTEMS = {
 
 /*
 ============================================================
-CURRENT STATE
+CURRENT SYSTEM
 ============================================================
 */
 
@@ -543,14 +612,19 @@ function stopPreviousEmulator() {
 
     }
 
+
     const oldLoader =
         document.getElementById(
             "emulatorjs-loader"
         );
 
+
     if (oldLoader) {
+
         oldLoader.remove();
+
     }
+
 
     game.innerHTML =
         "";
@@ -560,7 +634,7 @@ function stopPreviousEmulator() {
 
 /*
 ============================================================
-LOAD ROM LIST
+LOAD ROM LIST FROM roms.json
 ============================================================
 */
 
@@ -572,7 +646,7 @@ async function loadROMs() {
 
     /*
     --------------------------------------------------------
-    PC SYSTEM
+    PC SYSTEMS
     --------------------------------------------------------
     */
 
@@ -610,7 +684,7 @@ async function loadROMs() {
 
     /*
     --------------------------------------------------------
-    PROJECT ROM SYSTEM
+    PROJECT ROM SYSTEMS
     --------------------------------------------------------
     */
 
@@ -626,8 +700,10 @@ async function loadROMs() {
         "hidden"
     );
 
+
     status.textContent =
         "Loading ROM list...";
+
 
     romSelect.innerHTML =
         '<option value="">Loading...</option>';
@@ -668,6 +744,12 @@ async function loadROMs() {
         }
 
 
+        /*
+        ----------------------------------------------------
+        Filter ROMs for current system
+        ----------------------------------------------------
+        */
+
         const roms =
             files
                 .filter(
@@ -693,6 +775,12 @@ async function loadROMs() {
                 );
 
 
+        /*
+        ----------------------------------------------------
+        BUILD SELECT
+        ----------------------------------------------------
+        */
+
         romSelect.innerHTML =
             "";
 
@@ -702,11 +790,14 @@ async function loadROMs() {
                 "option"
             );
 
+
         empty.value =
             "";
 
+
         empty.textContent =
             "Select a game...";
+
 
         romSelect.appendChild(
             empty
@@ -722,13 +813,16 @@ async function loadROMs() {
                     "option"
                 );
 
+
             option.value =
                 rom;
+
 
             option.textContent =
                 rom.substring(
                     "roms/".length
                 );
+
 
             romSelect.appendChild(
                 option
@@ -751,8 +845,10 @@ async function loadROMs() {
             error
         );
 
+
         romSelect.innerHTML =
             '<option value="">Unable to load ROMs</option>';
+
 
         status.textContent =
             "Unable to load ROM list: " +
@@ -803,12 +899,20 @@ function startGame() {
         currentROM =
             filepath;
 
+
         currentLocalFile =
             null;
 
 
         stopPreviousEmulator();
 
+
+        /*
+        Use RAW GitHub URL.
+
+        This is important because it avoids
+        relative URL problems with certain ROM formats.
+        */
 
         window.EJS_gameUrl =
             GITHUB_RAW_PATH +
@@ -850,6 +954,11 @@ function startGame() {
         stopPreviousEmulator();
 
 
+        /*
+        EmulatorJS receives the selected
+        File object directly.
+        */
+
         window.EJS_gameUrl =
             currentLocalFile;
 
@@ -858,70 +967,38 @@ function startGame() {
 
     /*
     --------------------------------------------------------
-    EMULATORJS
+    EMULATORJS CONFIGURATION
     --------------------------------------------------------
     */
 
     window.EJS_player =
         "#game";
 
+
     window.EJS_core =
         system.core;
+
 
     window.EJS_pathtodata =
         DATA_PATH;
 
+
     window.EJS_startOnLoaded =
         true;
+
 
     window.EJS_gameName =
         currentROM;
 
 
     /*
-    --------------------------------------------------------
-    PSP THREAD SUPPORT
-    --------------------------------------------------------
+    PSP
     */
 
-    if (
-        system.threads
-    ) {
+    if (system.threads) {
 
         window.EJS_threads =
             true;
-
-        /*
-        This is only a diagnostic.
-        It does not replace the required
-        COOP / COEP headers.
-        */
-
-        if (
-            typeof SharedArrayBuffer ===
-            "undefined"
-        ) {
-
-            status.textContent =
-                "PSP requires SharedArrayBuffer. GitHub Pages is not providing it.";
-
-            console.warn(
-                "SharedArrayBuffer is unavailable."
-            );
-
-            return;
-
-        }
-
-        console.log(
-            "PSP: SharedArrayBuffer available:",
-            typeof SharedArrayBuffer !== "undefined"
-        );
-
-        console.log(
-            "PSP: crossOriginIsolated:",
-            window.crossOriginIsolated
-        );
 
     }
     else {
@@ -934,7 +1011,7 @@ function startGame() {
 
     /*
     --------------------------------------------------------
-    LOAD EMULATORJS LOADER
+    LOAD EMULATORJS
     --------------------------------------------------------
     */
 
