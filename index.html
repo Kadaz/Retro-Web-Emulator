@@ -96,6 +96,10 @@ h1 {
     font-size: 15px;
 }
 
+#pcFile {
+    margin-top: 10px;
+}
+
 .controls {
     display: flex;
     flex-wrap: wrap;
@@ -129,7 +133,7 @@ h1 {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .local-info {
@@ -331,11 +335,6 @@ const SYSTEMS = {
 
         core: "genesis_plus_gx",
 
-        /*
-         * Correct EmulatorJS control scheme for
-         * Sega Mega Drive / Genesis.
-         */
-
         controlScheme: "segaMD",
 
         source: "project",
@@ -368,11 +367,6 @@ const SYSTEMS = {
         name: "Game Gear",
 
         core: "genesis_plus_gx",
-
-        /*
-         * Correct EmulatorJS control scheme for
-         * Sega Game Gear.
-         */
 
         controlScheme: "segaGG",
 
@@ -413,13 +407,21 @@ const SYSTEMS = {
 
     },
 
+    /*
+    --------------------------------------------------------
+    GBA supports BOTH:
+    - ROMs from the project / roms.json
+    - ROMs selected from the PC
+    --------------------------------------------------------
+    */
+
     gba: {
 
         name: "Game Boy Advance",
 
         core: "mgba",
 
-        source: "project",
+        source: "both",
 
         extensions: [
             "gba"
@@ -632,7 +634,7 @@ async function loadROMs() {
 
     /*
     --------------------------------------------------------
-    PC SYSTEM
+    PC-ONLY SYSTEMS
     --------------------------------------------------------
     */
 
@@ -670,7 +672,7 @@ async function loadROMs() {
 
     /*
     --------------------------------------------------------
-    PROJECT ROM SYSTEM
+    PROJECT SYSTEMS + GBA
     --------------------------------------------------------
     */
 
@@ -678,13 +680,44 @@ async function loadROMs() {
         "hidden"
     );
 
-    pcFile.classList.add(
-        "hidden"
-    );
+    /*
+    GBA also gets the PC file picker.
+    Other project systems do not.
+    */
 
-    localInfo.classList.add(
-        "hidden"
-    );
+    if (
+        system.source ===
+        "both"
+    ) {
+
+        pcFile.classList.remove(
+            "hidden"
+        );
+
+        localInfo.classList.remove(
+            "hidden"
+        );
+
+    }
+    else {
+
+        pcFile.classList.add(
+            "hidden"
+        );
+
+        localInfo.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    pcFile.value =
+        "";
+
+    currentLocalFile =
+        null;
+
 
     status.textContent =
         "Loading ROM list...";
@@ -797,10 +830,24 @@ async function loadROMs() {
         }
 
 
-        status.textContent =
-            roms.length +
-            " game(s) found for " +
-            system.name;
+        if (
+            system.source ===
+            "both"
+        ) {
+
+            status.textContent =
+                roms.length +
+                " GBA game(s) found. You can also choose a GBA ROM from your PC.";
+
+        }
+        else {
+
+            status.textContent =
+                roms.length +
+                " game(s) found for " +
+                system.name;
+
+        }
 
 
     }
@@ -837,61 +884,14 @@ function startGame() {
 
     /*
     --------------------------------------------------------
-    PROJECT ROM
+    PC SOURCE
     --------------------------------------------------------
     */
 
     if (
         system.source ===
-        "project"
+        "pc"
     ) {
-
-        const filepath =
-            romSelect.value;
-
-
-        if (!filepath) {
-
-            status.textContent =
-                "Select a game first.";
-
-            return;
-
-        }
-
-
-        currentROM =
-            filepath;
-
-        currentLocalFile =
-            null;
-
-
-        stopPreviousEmulator();
-
-
-        window.EJS_gameUrl =
-            GITHUB_RAW_PATH +
-            filepath
-                .split("/")
-                .map(
-                    part =>
-                        encodeURIComponent(
-                            part
-                        )
-                )
-                .join("/");
-
-    }
-
-
-    /*
-    --------------------------------------------------------
-    PC ROM / ISO
-    --------------------------------------------------------
-    */
-
-    else {
 
         if (!currentLocalFile) {
 
@@ -912,6 +912,131 @@ function startGame() {
 
         window.EJS_gameUrl =
             currentLocalFile;
+
+    }
+
+
+    /*
+    --------------------------------------------------------
+    GBA: PROJECT ROM OR PC ROM
+    --------------------------------------------------------
+    */
+
+    else if (
+        system.source ===
+        "both"
+    ) {
+
+        /*
+        If a PC file was selected,
+        it takes priority.
+        */
+
+        if (
+            currentLocalFile
+        ) {
+
+            currentROM =
+                currentLocalFile.name;
+
+
+            stopPreviousEmulator();
+
+
+            window.EJS_gameUrl =
+                currentLocalFile;
+
+        }
+
+        /*
+        Otherwise use the selected
+        ROM from roms.json.
+        */
+
+        else {
+
+            const filepath =
+                romSelect.value;
+
+
+            if (!filepath) {
+
+                status.textContent =
+                    "Select a GBA game or choose a GBA ROM from your PC.";
+
+                return;
+
+            }
+
+
+            currentROM =
+                filepath;
+
+
+            stopPreviousEmulator();
+
+
+            window.EJS_gameUrl =
+                GITHUB_RAW_PATH +
+                filepath
+                    .split("/")
+                    .map(
+                        part =>
+                            encodeURIComponent(
+                                part
+                            )
+                    )
+                    .join("/");
+
+        }
+
+    }
+
+
+    /*
+    --------------------------------------------------------
+    NORMAL PROJECT SYSTEM
+    --------------------------------------------------------
+    */
+
+    else {
+
+        const filepath =
+            romSelect.value;
+
+
+        if (!filepath) {
+
+            status.textContent =
+                "Select a game first.";
+
+            return;
+
+        }
+
+
+        currentROM =
+            filepath;
+
+
+        currentLocalFile =
+            null;
+
+
+        stopPreviousEmulator();
+
+
+        window.EJS_gameUrl =
+            GITHUB_RAW_PATH +
+            filepath
+                .split("/")
+                .map(
+                    part =>
+                        encodeURIComponent(
+                            part
+                        )
+                )
+                .join("/");
 
     }
 
@@ -946,14 +1071,6 @@ function startGame() {
     CONTROLLER SCHEME
     --------------------------------------------------------
     */
-
-    /*
-     * Only Mega Drive and Game Gear have
-     * a special control scheme.
-     *
-     * All other systems use their normal
-     * EmulatorJS defaults.
-     */
 
     if (
         system.controlScheme
@@ -1098,9 +1215,29 @@ pcFile.addEventListener(
             file;
 
 
-        status.textContent =
-            "Selected: " +
-            file.name;
+        /*
+        GBA:
+        Selecting a PC ROM does NOT remove
+        the ROMs from roms.json.
+        */
+
+        if (
+            system.source ===
+            "both"
+        ) {
+
+            status.textContent =
+                "GBA PC ROM selected: " +
+                file.name;
+
+        }
+        else {
+
+            status.textContent =
+                "Selected: " +
+                file.name;
+
+        }
 
     }
 );
