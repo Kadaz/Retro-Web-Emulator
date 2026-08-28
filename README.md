@@ -5,7 +5,7 @@ GitHub Pages front end for a multi-system browser emulator.
 Planned:
 - SNES + NES
 - Mega Drive/Genesis + Master System + Game Gear
-- GBA + Game Boy + Game Boy Color
+- GBA + Game Boy + Game Boy Color + Atari + Nintendo64 + DS + PS1
 
 Commercial ROMs are not included. Use only ROMs you are legally entitled to use.
 
