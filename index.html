@@ -331,6 +331,13 @@ const SYSTEMS = {
 
         core: "genesis_plus_gx",
 
+        /*
+         * Correct EmulatorJS control scheme for
+         * Sega Mega Drive / Genesis.
+         */
+
+        controlScheme: "segaMD",
+
         source: "project",
 
         extensions: [
@@ -361,6 +368,13 @@ const SYSTEMS = {
         name: "Game Gear",
 
         core: "genesis_plus_gx",
+
+        /*
+         * Correct EmulatorJS control scheme for
+         * Sega Game Gear.
+         */
+
+        controlScheme: "segaGG",
 
         source: "project",
 
@@ -925,6 +939,36 @@ function startGame() {
 
     window.EJS_threads =
         false;
+
+
+    /*
+    --------------------------------------------------------
+    CONTROLLER SCHEME
+    --------------------------------------------------------
+    */
+
+    /*
+     * Only Mega Drive and Game Gear have
+     * a special control scheme.
+     *
+     * All other systems use their normal
+     * EmulatorJS defaults.
+     */
+
+    if (
+        system.controlScheme
+    ) {
+
+        window.EJS_controlScheme =
+            system.controlScheme;
+
+    }
+    else {
+
+        window.EJS_controlScheme =
+            undefined;
+
+    }
 
 
     /*
