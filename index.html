@@ -576,6 +576,42 @@ function isSupported(filename) {
 
 /*
 ============================================================
+FORCE SAVE CURRENT GAME
+============================================================
+*/
+
+function saveCurrentGame() {
+
+    try {
+
+        if (
+            window.EJS_emulator &&
+            window.EJS_emulator.gameManager &&
+            typeof window.EJS_emulator.gameManager.saveSaveFiles ===
+                "function"
+        ) {
+
+            window.EJS_emulator.gameManager.saveSaveFiles();
+
+            console.log("EmulatorJS: save files flushed.");
+
+        }
+
+    }
+    catch (error) {
+
+        console.warn(
+            "Could not force-save game data:",
+            error
+        );
+
+    }
+
+}
+
+
+/*
+============================================================
 STOP PREVIOUS EMULATOR
 ============================================================
 */
@@ -583,6 +619,8 @@ STOP PREVIOUS EMULATOR
 function stopPreviousEmulator() {
 
     try {
+
+        saveCurrentGame();
 
         if (
             typeof window.EJS_terminate ===
@@ -872,43 +910,6 @@ async function loadROMs() {
 
 /*
 ============================================================
-SAVE ID
-============================================================
-*/
-
-// EmulatorJS needs a unique numeric ID per game so that
-// saves and save states remain separate between games.
-function getGameID(systemKey, gameName) {
-
-    const value =
-        systemKey +
-        ":" +
-        gameName;
-
-    let hash =
-        0;
-
-    for (
-        let i = 0;
-        i < value.length;
-        i++
-    ) {
-
-        hash =
-            ((hash << 5) - hash) +
-            value.charCodeAt(i);
-
-        hash |= 0;
-
-    }
-
-    return Math.abs(hash) || 1;
-
-}
-
-
-/*
-============================================================
 START GAME
 ============================================================
 */
@@ -1096,35 +1097,25 @@ function startGame() {
     window.EJS_startOnLoaded =
         true;
 
-    /*
-    --------------------------------------------------------
-    SAVE / STORAGE CONFIGURATION
-    --------------------------------------------------------
-    */
-
-    // Give every game its own persistent save ID.
-    window.EJS_gameID =
-        getGameID(
-            currentSystem,
-            currentROM
-        );
-
-    // Keep the game name stable for browser saves.
     window.EJS_gameName =
-        currentROM
-            .replace(/^roms\//, "");
+        currentROM;
 
-    // Keep threaded cores disabled for GitHub Pages.
     window.EJS_threads =
         false;
 
-    // Flush normal SRAM/SAV data to browser storage regularly.
+    // Force EmulatorJS to flush SRAM/save files every 5 seconds.
     window.EJS_fixedSaveInterval =
-        7000;
+        5000;
 
-    // Explicitly allow EmulatorJS to use browser local storage.
+    // Keep browser storage enabled.
     window.EJS_disableLocalStorage =
         false;
+
+    // Force one final save when EmulatorJS exits.
+    window.EJS_onExit =
+        function() {
+            saveCurrentGame();
+        };
 
 
     /*
@@ -1300,6 +1291,27 @@ pcFile.addEventListener(
 
         }
 
+    }
+);
+
+
+/*
+============================================================
+PAGE EXIT SAVE
+============================================================
+*/
+
+window.addEventListener(
+    "pagehide",
+    function() {
+        saveCurrentGame();
+    }
+);
+
+window.addEventListener(
+    "beforeunload",
+    function() {
+        saveCurrentGame();
     }
 );
 
