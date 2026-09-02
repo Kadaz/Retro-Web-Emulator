@@ -872,27 +872,6 @@ async function loadROMs() {
 
 /*
 ============================================================
-SAVE ID
-============================================================
-*/
-
-function getGameID(systemKey, gameName) {
-
-    const value = systemKey + ":" + gameName;
-    let hash = 0;
-
-    for (let i = 0; i < value.length; i++) {
-        hash = ((hash << 5) - hash) + value.charCodeAt(i);
-        hash |= 0;
-    }
-
-    return Math.abs(hash) || 1;
-
-}
-
-
-/*
-============================================================
 START GAME
 ============================================================
 */
@@ -1080,94 +1059,11 @@ function startGame() {
     window.EJS_startOnLoaded =
         true;
 
-    window.EJS_gameID =
-        getGameID(
-            currentSystem,
-            currentROM
-        );
-
     window.EJS_gameName =
-        currentROM.replace(/^roms\//, "");
+        currentROM;
 
     window.EJS_threads =
         false;
-
-    /*
-    --------------------------------------------------------
-    EXPLICIT BROWSER SAVE HANDLING
-    --------------------------------------------------------
-    EmulatorJS 4.2.3 exposes loadSaveFiles() and saveSaveFiles()
-    through EJS_emulator.gameManager. We explicitly load SRAM
-    after game start and save it when the emulator exits.
-    */
-
-    window.EJS_fixedSaveInterval =
-        5000;
-
-    window.EJS_disableLocalStorage =
-        false;
-
-    window.EJS_onGameStart =
-        function() {
-
-            setTimeout(function() {
-
-                try {
-
-                    if (
-                        window.EJS_emulator &&
-                        window.EJS_emulator.gameManager &&
-                        typeof window.EJS_emulator.gameManager.loadSaveFiles ===
-                            "function"
-                    ) {
-
-                        window.EJS_emulator.gameManager.loadSaveFiles();
-                        console.log("EmulatorJS save files loaded.");
-
-                    }
-
-                }
-                catch (error) {
-
-                    console.warn(
-                        "Could not load EmulatorJS save files:",
-                        error
-                    );
-
-                }
-
-            }, 1000);
-
-        };
-
-    window.EJS_onExit =
-        function() {
-
-            try {
-
-                if (
-                    window.EJS_emulator &&
-                    window.EJS_emulator.gameManager &&
-                    typeof window.EJS_emulator.gameManager.saveSaveFiles ===
-                        "function"
-                ) {
-
-                    window.EJS_emulator.gameManager.saveSaveFiles();
-                    console.log("EmulatorJS save files saved.");
-
-                }
-
-            }
-            catch (error) {
-
-                console.warn(
-                    "Could not save EmulatorJS save files:",
-                    error
-                );
-
-            }
-
-        };
 
 
     /*
