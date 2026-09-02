@@ -576,42 +576,6 @@ function isSupported(filename) {
 
 /*
 ============================================================
-FORCE SAVE CURRENT GAME
-============================================================
-*/
-
-function saveCurrentGame() {
-
-    try {
-
-        if (
-            window.EJS_emulator &&
-            window.EJS_emulator.gameManager &&
-            typeof window.EJS_emulator.gameManager.saveSaveFiles ===
-                "function"
-        ) {
-
-            window.EJS_emulator.gameManager.saveSaveFiles();
-
-            console.log("EmulatorJS: save files flushed.");
-
-        }
-
-    }
-    catch (error) {
-
-        console.warn(
-            "Could not force-save game data:",
-            error
-        );
-
-    }
-
-}
-
-
-/*
-============================================================
 STOP PREVIOUS EMULATOR
 ============================================================
 */
@@ -619,8 +583,6 @@ STOP PREVIOUS EMULATOR
 function stopPreviousEmulator() {
 
     try {
-
-        saveCurrentGame();
 
         if (
             typeof window.EJS_terminate ===
@@ -1103,20 +1065,6 @@ function startGame() {
     window.EJS_threads =
         false;
 
-    // Force EmulatorJS to flush SRAM/save files every 5 seconds.
-    window.EJS_fixedSaveInterval =
-        5000;
-
-    // Keep browser storage enabled.
-    window.EJS_disableLocalStorage =
-        false;
-
-    // Force one final save when EmulatorJS exits.
-    window.EJS_onExit =
-        function() {
-            saveCurrentGame();
-        };
-
 
     /*
     --------------------------------------------------------
@@ -1291,27 +1239,6 @@ pcFile.addEventListener(
 
         }
 
-    }
-);
-
-
-/*
-============================================================
-PAGE EXIT SAVE
-============================================================
-*/
-
-window.addEventListener(
-    "pagehide",
-    function() {
-        saveCurrentGame();
-    }
-);
-
-window.addEventListener(
-    "beforeunload",
-    function() {
-        saveCurrentGame();
     }
 );
 
