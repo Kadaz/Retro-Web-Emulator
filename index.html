@@ -872,6 +872,43 @@ async function loadROMs() {
 
 /*
 ============================================================
+SAVE ID
+============================================================
+*/
+
+// EmulatorJS needs a unique numeric ID per game so that
+// saves and save states remain separate between games.
+function getGameID(systemKey, gameName) {
+
+    const value =
+        systemKey +
+        ":" +
+        gameName;
+
+    let hash =
+        0;
+
+    for (
+        let i = 0;
+        i < value.length;
+        i++
+    ) {
+
+        hash =
+            ((hash << 5) - hash) +
+            value.charCodeAt(i);
+
+        hash |= 0;
+
+    }
+
+    return Math.abs(hash) || 1;
+
+}
+
+
+/*
+============================================================
 START GAME
 ============================================================
 */
@@ -1059,10 +1096,34 @@ function startGame() {
     window.EJS_startOnLoaded =
         true;
 
-    window.EJS_gameName =
-        currentROM;
+    /*
+    --------------------------------------------------------
+    SAVE / STORAGE CONFIGURATION
+    --------------------------------------------------------
+    */
 
+    // Give every game its own persistent save ID.
+    window.EJS_gameID =
+        getGameID(
+            currentSystem,
+            currentROM
+        );
+
+    // Keep the game name stable for browser saves.
+    window.EJS_gameName =
+        currentROM
+            .replace(/^roms\//, "");
+
+    // Keep threaded cores disabled for GitHub Pages.
     window.EJS_threads =
+        false;
+
+    // Flush normal SRAM/SAV data to browser storage regularly.
+    window.EJS_fixedSaveInterval =
+        7000;
+
+    // Explicitly allow EmulatorJS to use browser local storage.
+    window.EJS_disableLocalStorage =
         false;
 
 
